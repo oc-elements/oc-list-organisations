@@ -1,0 +1,137 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-material/paper-material.html">
+
+<!--
+`oc-list-organisations`
+An element displaying an organisation mobile list friendly
+
+@demo demo/index.html
+-->
+
+<dom-module id="oc-list-organisations">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .organistaion-icon {
+        height: 20px;
+      }
+      .organistaion-logo {
+        width: 80px;
+        background: #BFD730;
+        border-radius: 5px;
+        padding: 5px;
+      }
+      .paper-material-container {
+        padding: 5px;
+      }
+      .controls-row {
+        border-top: 1px solid #D7D7D7;
+      }
+      .favourite-icon {
+        height: 24px;
+      }
+
+    </style>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <strong>Favourites</strong>
+        </div>
+      </div>
+      <paper-material elevation="1">
+      <div class="row paper-material-container">
+        <div class="col-xs-4">
+          <img src="images/elmi-distributors.png" alt="Elmi Distributors" class="organistaion-logo">
+        </div>
+        <div class="col-xs-8">
+          <div class="row">
+            <div class="col-xs-12">
+              <p>Organisation Name</p>
+              <p>Organisation Description</p>
+              <div class="pull-right">
+                <img src="images/Favourite-Icon.png" alt="" class="favourite-icon">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6 controls-row">
+              <img src="images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
+              Pay
+            </div>
+            <div class="col-xs-6 controls-row">
+              <img src="images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
+              11.2km
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </paper-material>
+      <!-- <div class="row">
+        <div class="col-xs-6">
+          <div class="icon pull-left">
+            Icon here
+          </div>
+          <div class="">
+            <h1>Organisation Name</h1>
+            <p>Organisation Description</p>
+          </div>
+
+        </div>
+        <div class="col-xs-6">
+            <div class="">
+              Favourite Element
+            </div>
+            <div class="">
+              Distance
+            </div>
+        </div>
+      </div> -->
+      <!-- <div class="row">
+        <div class="col-xs-4">
+            <div class="pull-left">
+              <img src="images/Cart-Icon.png" alt="Cart Icon" class="organistaion-icon">
+            </div>
+            <div class="">
+              Shop
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="pull-left">
+              <img src="images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
+            </div>
+            <div class="">
+              Pay
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="pull-left">
+              <img src="images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
+            </div>
+            <div class="">
+              Map
+            </div>
+        </div>
+      </div> -->
+
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'oc-list-organisations',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'oc-list-organisations',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
