@@ -1,5 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../app-route/app-route.html">
+<link rel="import" href="../app-route/app-location.html">
+<link rel="import" href="../oc-core-utils/oc-core.html">
 <link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../oc-core-utils/oc-api-consumer-behaviour.html">
+<link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
 
 <!--
 `oc-list-organisations`
@@ -9,8 +14,9 @@ An element displaying an organisation mobile list friendly
 -->
 
 <dom-module id="oc-list-organisations">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
   <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
       :host {
         display: block;
@@ -40,7 +46,15 @@ An element displaying an organisation mobile list friendly
       }
 
     </style>
-    <div class="container-fluid">
+    <oc-organisation-api id="organisationApi"></oc-organisation-api>
+    <p>[[organisations.count]]</p>
+
+    <template class="container-fluid" is="dom-repeat" items="[[organisations]]">
+      <p style="color:#000;">[[item.id]]</p>
+      <p>[[item.id.fromOrganisation.name]]</p>
+      <p>[[item.toOrganisation.code]]</p>
+    </template>
+    <div>
       <div class="row">
         <div class="col-xs-12">
           <strong>Favourites</strong>
@@ -57,8 +71,6 @@ An element displaying an organisation mobile list friendly
               <div class="pull-right"><img src="images/Favourite-Icon.png" alt="" class="favourite-icon"></div>
               <p>Elmi Distributors</p>
               <p>Bellville - Contact Only</p>
-
-
             </div>
           </div>
           <div class="row margin-0">
@@ -74,54 +86,6 @@ An element displaying an organisation mobile list friendly
         </div>
       </div>
     </paper-material>
-
-      <!-- <div class="row">
-        <div class="col-xs-6">
-          <div class="icon pull-left">
-            Icon here
-          </div>
-          <div class="">
-            <h1>Organisation Name</h1>
-            <p>Organisation Description</p>
-          </div>
-
-        </div>
-        <div class="col-xs-6">
-            <div class="">
-              Favourite Element
-            </div>
-            <div class="">
-              Distance
-            </div>
-        </div>
-      </div> -->
-      <!-- <div class="row">
-        <div class="col-xs-4">
-            <div class="pull-left">
-              <img src="images/Cart-Icon.png" alt="Cart Icon" class="organistaion-icon">
-            </div>
-            <div class="">
-              Shop
-            </div>
-        </div>
-        <div class="col-xs-4">
-            <div class="pull-left">
-              <img src="images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
-            </div>
-            <div class="">
-              Pay
-            </div>
-        </div>
-        <div class="col-xs-4">
-            <div class="pull-left">
-              <img src="images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
-            </div>
-            <div class="">
-              Map
-            </div>
-        </div>
-      </div> -->
-
     </div>
   </template>
 
@@ -129,14 +93,36 @@ An element displaying an organisation mobile list friendly
     Polymer({
 
       is: 'oc-list-organisations',
+      behaviors: [OC.Behaviours.ApiConsumer],
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'oc-list-organisations',
+        organisationId: {
+        type: Number
+      },
+        organisations: {
+          type: Array,
+          notify: true
         },
       },
+      observers: [
+      '_init(organisationId)'
+    ],
 
+      ready: function() {
+        this._init()
+      },
+
+      _init: function() {
+        this._getOrganisationConnections(OC.organisationId, "M", 200000, -33.924246, 18.413985, 1, -1);
+      },
+
+      _getOrganisationConnections: function(organisationId, type, radius, lat ,long , page, pagesize) {
+        this.$.organisationApi.getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
+        .then(function(request){
+                     var data = request.response.results;
+                     this.organisations = data;
+                   }.bind(this));
+      }
     });
   </script>
 </dom-module>
