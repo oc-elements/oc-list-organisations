@@ -53,8 +53,6 @@ An element displaying an organisation mobile list friendly
       .white-bg {
         background: #fff;
       }
-
-
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
     <template class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]" style="margin:20px;">
@@ -76,7 +74,7 @@ An element displaying an organisation mobile list friendly
           <div class="row margin-0">
             <div class="col-xs-6 controls-row">
               <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
-              Pay
+                <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisationTapped" raised>Pay</paper-button>
             </div>
             <div class="col-xs-6 controls-row">
               <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
@@ -89,12 +87,12 @@ An element displaying an organisation mobile list friendly
     </div>
   </template>
 </template>
-
   <script>
     Polymer({
 
       is: 'oc-list-organisations',
       behaviors: [OC.Behaviours.ApiConsumer],
+
 
       properties: {
         organisationId: {
@@ -115,6 +113,10 @@ An element displaying an organisation mobile list friendly
 
       _init: function() {
         this._getOrganisationConnections(OC.organisationId, "M", 200000, -33.924246, 18.413985, 1, -1);
+      },
+
+      _payOrganisationTapped: function (e) {
+          this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
       },
 
       _getOrganisationConnections: function(organisationId, type, radius, lat ,long , page, pagesize) {
