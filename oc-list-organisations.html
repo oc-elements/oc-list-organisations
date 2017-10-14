@@ -20,7 +20,7 @@ An element displaying an organisation mobile list friendly
     <style>
       :host {
         display: block;
-        color: :000;
+        color :000;
         background: #fff;
       }
       .organistaion-icon {
@@ -55,119 +55,145 @@ An element displaying an organisation mobile list friendly
       }
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
-    <template class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]" style="margin:20px;">
+    <template id="template" class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]"  sort="_sort" style="margin:20px;">
       <div class="spacing">
-      <paper-material elevation="1" class="white-bg">
-      <div class="row paper-material-container margin-10">
-        <div class="col-xs-4">
-          <img src="../../images/elmi-distributors.png" alt="Elmi Distributors" class="organistaion-logo">
-        </div>
-        <div class="col-xs-8">
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="pull-right"><img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon"></div>
-              <p>[[item.toOrganisation.name]]</p>
-              <p>[[item.toOrganisation.status.description]]</p>
-              <p>[[item.toOrganisation.profile.address.city]]</p>
+        <paper-material elevation="1" class="white-bg">
+          <div class="row paper-material-container margin-10">
+            <div class="col-xs-4">
+              <img src="../../images/elmi-distributors.png" alt="Elmi Distributors" class="organistaion-logo">
+            </div>
+            <div class="col-xs-8">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="pull-right"><img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon"></div>
+                  <p>[[item.toOrganisation.name]]</p>
+                  <p>[[item.toOrganisation.status.description]]</p>
+                  <p>[[item.toOrganisation.profile.address.city]]</p>
+                </div>
+              </div>
+              <div class="row margin-0">
+                <div class="col-xs-6 controls-row">
+                  <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
+                  <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisationTapped" raised>Pay</paper-button>
+                </div>
+                <div class="col-xs-6 controls-row">
+                  <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
+                  [[item.distance]] km
+
+                </div>
+              </div>
             </div>
           </div>
-          <div class="row margin-0">
-            <div class="col-xs-6 controls-row">
-              <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
-                <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisationTapped" raised>Pay</paper-button>
-            </div>
-            <div class="col-xs-6 controls-row">
-              <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
-              [[_getDistanceFromLatLonInKm(lattitude,longitude,item.toOrganisation.address.longitude, item.toOrganisation.address.lattitude )]] km
-            </div>
-          </div>
-        </div>
+        </paper-material>
       </div>
-    </paper-material>
-    </div>
+    </template>
   </template>
-</template>
   <script>
-    Polymer({
+      Polymer({
 
-      is: 'oc-list-organisations',
-      behaviors: [OC.Behaviours.ApiConsumer],
+          is: 'oc-list-organisations',
+          behaviors: [OC.Behaviours.ApiConsumer],
 
 
-      properties: {
-        organisationId: {
-          type: Number
-        },
-        organisations: {
-          type: Array,
-          notify: true
-        },
-        lattitude: {
-            type: String,
-            value: -33.924246
-        },
-        longitude: {
-            type: String,
-            value: 18.41398
-        },
-        radius: {
-            type: String,
-            value: 200000
-        }
-      },
-      observers: [
-      '_init(organisationId)'
-    ],
+          properties: {
+              organisationId: {
+                  type: Number
+              },
+              organisations: {
+                  type: Array,
+                  notify: true
+              },
+              latitude: {
+                  type: String,
+                  value: -33.924246
+              },
+              longitude: {
+                  type: String,
+                  value: 18.41398
+              },
+              radius: {
+                  type: String,
+                  value: 200000
+              }
+          },
+          observers: [
+              '_init(organisationId)'
+          ],
 
-      ready: function() {
-        this._init()
-      },
+          ready: function() {
+              this._init();
+          },
 
-      _init: function() {
-        this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.lattitude, this.longitude, 1, -1);
-      },
+          _init: function() {
+              this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.lattitude, this.longitude, 1, -1);
+          },
 
-      _payOrganisationTapped: function (e) {
-          this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
-      },
+          _payOrganisationTapped: function (e) {
+              this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
+          },
 
-      _getOrganisationConnections: function(organisationId, type, radius, lat ,long , page, pagesize) {
-        this.$.organisationApi.getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
-        .then(function(request){
-                     var data = request.response.results;
-                     this.organisations = data;
-                   }.bind(this));
-      },
-        /**
-         * Calculates the distance between two geo corditanes
-         * @param lat1 lattiude of starting point
-         * @param lon1 longitude of starting point
-         * @param lat2 lattiude of ending point
-         * @param lon2 longitude of ending point
-         * @returns {number}
-         * @private
-         */
-      _getDistanceFromLatLonInKm: function (lat1,lon1,lat2,lon2) {
-        var R = 6371; // Radius of the earth in km
-        var dLat = deg2rad(lat2-lat1);  // deg2rad below
-        var dLon = deg2rad(lon2-lon1);
-        var a =
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
-            Math.sin(dLon/2) * Math.sin(dLon/2)
-        ;
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c; // Distance in km
-        return d;
-    },
-    /**
-     * converts degrees to Rad
-     * @param deg
-     * @returns {number}
-     */
-    _deg2rad : function (deg) {
-        return deg * (Math.PI/180)
-    }
-  });
+          _getOrganisationConnections: function(organisationId, type, radius, lat ,long , page, pagesize) {
+              this.$.organisationApi.getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
+                  .then(function(request){
+                      var data = request.response.results;
+
+                      this.organisations = this._calculateDistances(data);
+                  }.bind(this));
+          },
+          _calculateDistances: function(organistations) {
+              var calculatedOrganisations=[];
+
+              for (var i = 0; i < organistations.length; i++) {
+                  calculatedOrganisations[i] = organistations[i];
+                  if(organistations[i].toOrganisation.profile.address !== null) {
+                      calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
+                  }else{
+                      calculatedOrganisations[i].distance = "N/A"
+                  }
+              }
+              return calculatedOrganisations;
+          },
+          /**
+           * Calculates the distance between two geo corditanes
+           * @param lat1 lattiude of starting point
+           * @param lon1 longitude of starting point
+           * @param lat2 lattiude of ending point
+           * @param lon2 longitude of ending point
+           * @returns {number}
+           * @private
+           */
+          _getDistanceFromLatLonInKm: function (lat1,lon1,lat2,lon2) {
+              var R = 6371; // Radius of the earth in km
+              var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
+              var dLon = this._deg2rad(lon2-lon1);
+              var a =
+                  Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2)
+              ;
+              var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+              var d = R * c; // Distance in km
+              return d.toFixed(0);
+          },
+          /**
+           * converts degrees to Rad
+           * @param deg
+           * @returns {number}
+           */
+          _deg2rad : function (deg) {
+              return deg * (Math.PI/180)
+          },
+          /**
+           * Sort from closest to furthest
+           * @param a first record
+           * @param b secod record
+           * @returns {number} returns new position
+           * @private
+           */
+          _sort: function(a, b) {
+              if (a.distance === b.distance) return 0;
+              return Number(a.distance) < Number(b.distance) ? -1 : 1;
+          }
+      });
   </script>
 </dom-module>
