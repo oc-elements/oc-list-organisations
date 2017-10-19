@@ -59,13 +59,12 @@
               </div>
               <div class="row margin-0">
                 <div class="col-xs-6 controls-row">
-                  <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organistaion-icon">
-                  <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisationTapped" raised>Pay</paper-button>
+                  <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">
+                  <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisation" raised>Pay</paper-button>
                 </div>
                 <div class="col-xs-6 controls-row">
-                  <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organistaion-icon">
+                  <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">
                   [[item.distance]] km
-
                 </div>
               </div>
             </div>
@@ -119,7 +118,7 @@
             this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
         }
 
-        _payOrganisationTapped(e) {
+        _payOrganisation(e) {
             // Notify of payment
             this.dispatchEvent(new CustomEvent('ct-pay-organisation', {
                 bubbles: true, composed: true, details: {"organistionId" :  e.model.item.toOrganisation.id}
