@@ -3,8 +3,8 @@
   "description": "List of organisations that can be paid or orderedfrom",
   "main": "oc-list-organisations.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0"
-    "oc-organisaiton-api": "git://github.com/oc-elements/oc-organisation-api#2.x",
+    "polymer": "Polymer/polymer#^2.0.0",
+    "oc-organisaiton-api": "git://github.com/oc-elements/oc-organisation-api#2.x"
 
   },
   "devDependencies": {
