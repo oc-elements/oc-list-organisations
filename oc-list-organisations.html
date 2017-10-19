@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../oc-core-utils/oc-core-utils.html">
+<link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
 <link rel="import" href="../paper-material/paper-material.html">
 
@@ -42,7 +44,7 @@
       }
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
-    <template id="template" class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]"  sort="_sort" style="margin:20px;">
+    <template  class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]"  sort="_sort" style="margin:20px;">
       <div class="spacing">
         <paper-material elevation="1" class="white-bg">
           <div class="row paper-material-container margin-10">
@@ -112,11 +114,12 @@
         }
 
         ready() {
+            super.ready();
             this._init();
         }
 
         _init() {
-            this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
+            this._getOrganisationConnections(304, "M", this.radius, this.latitude, this.longitude, 1, -1);
         }
 
         _payOrganisation(e) {
@@ -124,12 +127,10 @@
             this.dispatchEvent(new CustomEvent('ct-pay-organisation', {
                 bubbles: true, composed: true, details: {"organistionId" :  e.model.item.toOrganisation.id}
             }));
-
-            this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
         }
 
         _getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize) {
-            this.$.organisationApi.getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
+            this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
                 .then(function(request){
                     var data = request.response.results;
 
@@ -183,7 +184,7 @@
          * @param deg
          * @returns {number}
          */
-        _deg2rad(deg) {
+        static _deg2rad(deg) {
             return deg * (Math.PI/180)
         }
 
@@ -194,7 +195,7 @@
          * @returns {number} returns new position
          * @private
          */
-        _sort(a, b) {
+        static _sort(a, b) {
             if (a.distance === b.distance) return 0;
             return Number(a.distance) < Number(b.distance) ? -1 : 1;
         }
