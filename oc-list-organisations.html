@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../bower_components/oc-organisaiton-api/oc-organisation-api.html">
+<link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
 
 <dom-module id="oc-list-organisations">
   <template>
@@ -120,6 +120,11 @@
         }
 
         _payOrganisationTapped(e) {
+            // Notify of payment
+            this.dispatchEvent(new CustomEvent('ct-pay-organisation', {
+                bubbles: true, composed: true, details: {"organistionId" :  e.model.item.toOrganisation.id}
+            }));
+
             this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
         }
 
@@ -159,7 +164,7 @@
          * @returns {number}
          * @private
          */
-        _getDistanceFromLatLonInKm: function (lat1,lon1,lat2,lon2) {
+        _getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
             var R = 6371; // Radius of the earth in km
             var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
             var dLon = this._deg2rad(lon2-lon1);
@@ -178,7 +183,7 @@
          * @param deg
          * @returns {number}
          */
-        _deg2rad : function (deg) {
+        _deg2rad(deg) {
             return deg * (Math.PI/180)
         }
 
