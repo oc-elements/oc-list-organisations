@@ -12,19 +12,41 @@
     <link rel="import" href="../oc-list-organisations.html">
   </head>
   <body>
-    <test-fixture id="basic">
+
+    <test-fixture id="BasicTestFixture">
       <template>
         <oc-list-organisations></oc-list-organisations>
       </template>
     </test-fixture>
 
+    <test-fixture id="ChangedPropertyTestFixture">
+      <template>
+        <oc-list-organisations prop1="new-prop1"></oc-list-organisations>
+      </template>
+    </test-fixture>
+
     <script>
-      suite('oc-list-organisations', function() {
-        test('instantiating the element works', function() {
-          var element = fixture('basic');
-          assert.equal(element.is, 'oc-list-organisations');
+      suite('oc-list-organisations', () => {
+
+        test('instantiating the element with default properties works', () => {
+          const element = fixture('BasicTestFixture');
+          assert.equal(element.prop1, 'oc-list-organisations');
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('h2');
+          assert.equal(elementHeader.innerHTML, 'Hello oc-list-organisations!');
         });
+
+        test('setting a property on the element works', () => {
+          // Create a test fixture
+          const element = fixture('ChangedPropertyTestFixture');
+          assert.equal(element.prop1, 'new-prop1');
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('h2');
+          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+        });
+
       });
     </script>
+
   </body>
 </html>
