@@ -184,7 +184,7 @@
          * @param deg
          * @returns {number}
          */
-        static _deg2rad(deg) {
+         _deg2rad(deg) {
             return deg * (Math.PI/180)
         }
 
@@ -195,7 +195,7 @@
          * @returns {number} returns new position
          * @private
          */
-        static _sort(a, b) {
+         _sort(a, b) {
             if (a.distance === b.distance) return 0;
             return Number(a.distance) < Number(b.distance) ? -1 : 1;
         }
