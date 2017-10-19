@@ -125,7 +125,7 @@
         _payOrganisation(e) {
             // Notify of payment
             this.dispatchEvent(new CustomEvent('ct-pay-organisation', {
-                bubbles: true, composed: true, details: {"organistionId" :  e.model.item.toOrganisation.id}
+                bubbles: true, composed: true, detail: {"organistionId" :  e.model.item.toOrganisation.id}
             }));
         }
 
