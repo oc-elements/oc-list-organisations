@@ -111,11 +111,11 @@
           };
         }
 
-        ready: function() {
+        ready() {
             this._init();
         }
 
-        _init: function() {
+        _init() {
             this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
         }
 
@@ -123,7 +123,7 @@
             this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
         }
 
-        _getOrganisationConnections: function(organisationId, type, radius, lat ,long , page, pagesize) {
+        _getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize) {
             this.$.organisationApi.getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
                 .then(function(request){
                     var data = request.response.results;
@@ -136,7 +136,7 @@
          * Calculated the distance between current location and organisations
          *
          */
-        _calculateDistances: function(organistations) {
+        _calculateDistances(organistations) {
             var calculatedOrganisations=[];
 
             for (var i = 0; i < organistations.length; i++) {
@@ -189,7 +189,7 @@
          * @returns {number} returns new position
          * @private
          */
-        _sort: function(a, b) {
+        _sort(a, b) {
             if (a.distance === b.distance) return 0;
             return Number(a.distance) < Number(b.distance) ? -1 : 1;
         }
