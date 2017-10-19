@@ -119,7 +119,7 @@
             this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
         }
 
-        _payOrganisationTapped: function (e) {
+        _payOrganisationTapped(e) {
             this.fire('ct-pay-organisation-tapped', e.model.item.toOrganisation.id);
         }
 
