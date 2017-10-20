@@ -1,23 +1,24 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../oc-core-utils/oc-core-utils.html">
-<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
 <link rel="import" href="../paper-material/paper-material.html">
 
 <dom-module id="oc-list-organisations">
   <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
       :host {
-        display: block;
-        color :000;
+
+        color :#000;
         background: #fff;
       }
-      .organistaion-icon {
+      .organisation-icon {
         padding: 5px;
         height: 36px;
       }
 
-      .organistaion-logo {
+      .organisation-logo {
         width: 100px;
         background: #BFD730;
         border-radius: 5px;
@@ -35,46 +36,48 @@
       .margin-0 {
         margin: 0;
       }
-      .spacing {
-        padding: 20px 0;
-        background: #bfd730;
-      }
-      .white-bg {
-        background: #fff;
+      paper-card {
+        width:100%;
       }
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
-    <template  class="container-fluid margin-10" is="dom-repeat" items="[[organisations]]"  sort="_sort" style="margin:20px;">
-      <div class="spacing">
-        <paper-material elevation="1" class="white-bg">
-          <div class="row paper-material-container margin-10">
-            <div class="col-xs-4">
-              <img src="../../images/elmi-distributors.png" alt="Elmi Distributors" class="organistaion-logo">
-            </div>
-            <div class="col-xs-8">
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="pull-right"><img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon"></div>
-                  <p>[[item.toOrganisation.name]]</p>
-                  <p>[[item.toOrganisation.status.description]]</p>
-                  <p>[[item.toOrganisation.profile.address.city]]</p>
+    <div class="container-fluid">
+      <template is="dom-repeat" items="[[organisations]]" sort="_sort">
+        <div class="row">
+          <div class="col-xs-12">
+            <paper-card>
+              <div class="card-content">
+                <div class="row paper-material-container margin-10">
+                  <div class="col-xs-4">
+                    <img src="../../images/elmi-distributors.png" alt="Elmi Distributors" class="organisation-logo">
+                  </div>
+                  <div class="col-xs-8">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <div class="pull-right"><img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon"></div>
+                        <p>[[item.toOrganisation.name]]</p>
+                        <p>[[item.toOrganisation.status.description]]</p>
+                        <p>[[item.toOrganisation.profile.address.city]]</p>
+                      </div>
+                    </div>
+                    <div class="row margin-0">
+                      <div class="col-xs-6 controls-row">
+                        <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">
+                        <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisation" raised>Pay</paper-button>
+                      </div>
+                      <div class="col-xs-6 controls-row">
+                        <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">
+                        [[item.distance]] km
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="row margin-0">
-                <div class="col-xs-6 controls-row">
-                  <img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">
-                  <paper-button class="table-button btn-primary btn-sm" on-tap="_payOrganisation" raised>Pay</paper-button>
-                </div>
-                <div class="col-xs-6 controls-row">
-                  <img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">
-                  [[item.distance]] km
-                </div>
-              </div>
-            </div>
+            </paper-card>
           </div>
-        </paper-material>
-      </div>
-    </template>
+        </div>
+      </template>
+    </div>
   </template>
 
   <script>
