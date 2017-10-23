@@ -125,7 +125,7 @@
           }
 
           _init() {
-              this._getOrganisationConnections(OC.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
+              this._getOrganisationConnections(OC.context.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
           }
 
           _payOrganisation(e) {
