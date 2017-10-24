@@ -15,70 +15,76 @@
         color :#000;
         background: #fff;
       }
+      h2 {
+        font-size:1.375em !important;
+      }
       .organisation-icon {
-        padding: 5px;
-        height: 36px;
+        padding:0 5px;
+        width: 24px;
       }
-
-      .organisation-logo {
-        width: 80px;
-        background: #BFD730;
-        border-radius: 5px;
-        padding: 5px;
+      .organisation-title {
+        margin-top:0;
       }
-
 
       .favourite-icon {
-        height: 24px;
+        width: 24px;
       }
 
       paper-card {
         width:100%;
       }
+      .organisation-logo-container {
+        position: absolute;
+        top: 4px;
+        left: 0;
+        bottom: 0;
+        width: 96px;
+        background: #fff;
+      }
+      .organisation-logo-container img {
+        width: 100%;
+        margin: 6px;
+      }
+      .card-content {
+        margin-left:96px;
+      }
+      .card-actions {
+        margin-left:112px;
+      }
+      .actions-row-left-adjusted {
+        margin-left: -32px !important;
+      }
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
     <div class="container-fluid">
       <template is="dom-repeat" items="[[organisations]]" sort="_sort">
-
-
         <paper-card>
+          <div class="organisation-logo-container">
+            <img src="../../images/elmi-distributors.png" alt="Elmi Distributors">
+          </div>
           <div class="card-content">
             <div class="row">
-              <div class="col-xs-4">
-                <img src="../../images/elmi-distributors.png" alt="Elmi Distributors" class="organisation-logo">
-              </div>
-              <div class="col-xs-8">
-                <div class="row">
-                  <div class="col-xs-12">
-                    <div class="pull-right">
-                      <img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon">
-                      <p>[[item.distance]]km</p>
-                    </div>
-
-                    <p>[[item.toOrganisation.name]]</p>
-                    <p>[[item.toOrganisation.status.description]]</p>
-                    <p>[[item.toOrganisation.profile.address.city]]</p>
-
-                  </div>
+              <div class="col-xs-12">
+                <div class="pull-right">
+                  <img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon">
+                  <p></p>
                 </div>
+                <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
+                <span>[[item.toOrganisation.profile.address.city]] - [[item.toOrganisation.status.description]]</span>
               </div>
             </div>
           </div>
           <div class="card-actions">
-            <div class="col-xs-4">
-              <paper-button><img src="../../images/Cart-Icon.png" alt="Shop Icon" class="organisation-icon"/>Shop</paper-button>
-            </div>
-            <div class="col-xs-4">
-
-              <paper-button on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
-            </div>
-            <div class="col-xs-4">
-              <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">Map</paper-button>
-
+            <div class="row actions-row-left-adjusted">
+              <div class="col-xs-6">
+                <paper-button on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
+              </div>
+              <div class="col-xs-6">
+                <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">[[item.distance]]km</paper-button>
+              </div>
             </div>
           </div>
         </paper-card>
-
       </template>
     </div>
   </template>
