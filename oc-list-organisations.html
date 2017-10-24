@@ -57,6 +57,27 @@
       .actions-row-left-adjusted {
         margin-left: -32px !important;
       }
+      .organisation-logo-container {
+        position: absolute;
+        top: 4px;
+        left: 0;
+        bottom: 0;
+        width: 96px;
+        background: #fff;
+      }
+      .organisation-logo-container img {
+        width: 100%;
+        margin: 6px;
+      }
+      .card-content {
+        margin-left:96px;
+      }
+      .card-actions {
+        margin-left:112px;
+      }
+      .actions-row-left-adjusted {
+        margin-left: -32px !important;
+      }
     </style>
     <oc-organisation-api id="organisationApi"></oc-organisation-api>
     <div class="container-fluid">
@@ -139,8 +160,13 @@
 
           _payOrganisation(e) {
               // Notify of payment
-              this.dispatchEvent(new CustomEvent('ct-pay-organisation', {
-                  bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
+              this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+                  bubbles: true, composed: true,
+                  detail: {
+                      "organisationId" :  e.model.item.toOrganisation.id,
+                      "name" : e.model.item.toOrganisation.name,
+                      "image" : "../../images/elmi-distributors.png"
+                  }
               }));
           }
 
