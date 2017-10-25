@@ -161,12 +161,7 @@
           _payOrganisation(e) {
               // Notify of payment
               this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-                  bubbles: true, composed: true,
-                  detail: {
-                      "organisationId" :  e.model.item.toOrganisation.id,
-                      "name" : e.model.item.toOrganisation.name,
-                      "image" : "../../images/elmi-distributors.png"
-                  }
+                  bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
               }));
           }
 
