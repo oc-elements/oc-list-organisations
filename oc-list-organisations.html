@@ -84,7 +84,7 @@
       <template is="dom-repeat" items="[[organisations]]" sort="_sort">
         <paper-card>
           <div class="organisation-logo-container">
-            <img src="../../images/elmi-distributors.png" alt="Elmi Distributors">
+            <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Elmi Distributors">
           </div>
           <div class="card-content">
             <div class="row">
@@ -234,6 +234,14 @@
           _sort(a, b) {
               if (a.distance === b.distance) return 0;
               return Number(a.distance) < Number(b.distance) ? -1 : 1;
+          }
+
+          _calculateImage(image){
+              if(image === null){
+                  return '../../images/elmi-distributors.png';
+              }else{
+                  return "http://test-static.ordercloud.com/" + image;
+              }
           }
       }
 
