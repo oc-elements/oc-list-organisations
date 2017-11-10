@@ -65,6 +65,9 @@
         width: 96px;
         background: #fff;
       }
+      organisation-title-container {
+        margin-right:25px;
+      }
       .organisation-logo-container img {
         width: 100%;
         margin: 6px;
@@ -83,8 +86,8 @@
     <div class="container-fluid">
       <template is="dom-repeat" items="[[organisations]]" sort="_sort">
         <paper-card>
-          <div class="organisation-logo-container">
-            <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Elmi Distributors">
+          <div class="organisation-logo-container" on-tap="_viewProductList">
+            <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail">
           </div>
           <div class="card-content">
             <div class="row">
@@ -93,8 +96,10 @@
                   <img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon">
                   <p></p>
                 </div>
-                <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
-                <span>[[item.toOrganisation.profile.address.city]] - [[item.toOrganisation.status.description]]</span>
+                <div class="organisation-title-container" on-tap="_viewProductList">
+                  <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
+                  <span>[[item.toOrganisation.profile.address.city]] - [[item.toOrganisation.status.description]]</span>
+                </div>
               </div>
             </div>
           </div>
@@ -165,6 +170,12 @@
               }));
           }
 
+          _viewProductList(e) {
+              this.dispatchEvent(new CustomEvent('oc-product-list', {
+                  bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
+              }));
+          }
+
           _getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize) {
               this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize)
                   .then(function(request){
@@ -227,7 +238,7 @@
           /**
            * Sort from closest to furthest
            * @param a first record
-           * @param b secod record
+           * @param b second record
            * @returns {number} returns new position
            * @private
            */
