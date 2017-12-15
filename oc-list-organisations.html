@@ -113,7 +113,7 @@
                             <div class="col-xs-6">
                                 <paper-button on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6" hidden$="[[hidelocation]]">
                                 <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">[[item.distance]]km</paper-button>
                             </div>
                         </div>
@@ -155,6 +155,10 @@
                     radius: {
                         type: String,
                         value: 10000000
+                    },
+                    hidelocation: {
+                        type: Boolean,
+                        value: false,
                     }
                 };
             }
