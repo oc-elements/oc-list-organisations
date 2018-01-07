@@ -5,6 +5,7 @@
 <link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-button/paper-button.html">
 
 <dom-module id="oc-list-organisations">
     <template>
@@ -132,13 +133,15 @@
          * @polymer
          * @demo demo/index.html
          */
-        class OcListOrganisations extends Polymer.Element {
+        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
             static get is() { return 'oc-list-organisations'; }
             static get properties() {
                 return {
+                    //TODO: change this to work with organisation store
                     organisationId: {
                         type: Number,
-                        observer: "_init"
+                        observer: "_fetchOrganisations",
+                        statePath: 'config.organisationId'
                     },
                     organisations: {
                         type: Array,
@@ -165,11 +168,12 @@
 
             ready() {
                 super.ready();
-                this._init();
             }
 
-            _init() {
-                this._getOrganisationConnections(OC.context.organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
+            _fetchOrganisations(organisationId) {
+                if(!organisationId) {
+                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
+                }
             }
 
             _payOrganisation(e) {
