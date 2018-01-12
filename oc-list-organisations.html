@@ -171,7 +171,7 @@
             }
 
             _fetchOrganisations(organisationId) {
-                if(!organisationId) {
+                if(organisationId) {
                     this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1);
                 }
             }
