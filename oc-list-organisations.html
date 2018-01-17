@@ -20,6 +20,19 @@
             h2 {
                 font-size:1.375em !important;
             }
+            .category-heading {
+                border-top: 1px #cecece solid;
+                border-bottom: 1px #cecece solid;
+                background: #f8f8f8;
+                color: #000;
+                line-height:2.6;
+                font-weight:bold;
+            }
+            .the-heading {
+                font-size:1.13em !important;
+                margin: 20px 0 !important;
+
+            }
             .organisation-icon {
                 padding:0 5px;
                 width: 24px;
@@ -31,7 +44,6 @@
             .favourite-icon {
                 width: 24px;
             }
-
             paper-card {
                 width:100%;
                 -webkit-border-radius: 6px;
@@ -91,7 +103,14 @@
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
         <div class="container-fluid">
-            <paper-toggle-button checked="{{!marketplace}}">Show Private</paper-toggle-button>
+            <div class="row category-heading">
+                <div class="col-xs-12">
+                    <span class="the-heading">My Connections</span>
+                    <span class="pull-right"><paper-toggle-button checked="{{!marketplace}}">Show Private</paper-toggle-button></span>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
                     <div class="organisation-logo-container" on-tap="_viewProductList">
