@@ -105,7 +105,7 @@
         <div class="container-fluid">
             <div class="row category-heading">
                 <div class="col-xs-12">
-                    <span class="heading-label">My Connections</span>
+                    <span class="heading-label">Shops</span>
                     <span class="pull-right"><paper-toggle-button checked="{{!marketplace}}">Show Private</paper-toggle-button></span>
                 </div>
             </div>
@@ -119,13 +119,9 @@
                     <div class="card-content">
                         <div class="row">
                             <div class="col-xs-12">
-                                <div class="pull-right">
-                                    <img src="../../images/Favourite-Icon.png" alt="" class="favourite-icon">
-                                    <p></p>
-                                </div>
                                 <div class="organisation-title-container" on-tap="_viewProductList">
                                     <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
-                                    <span>[[item.toOrganisation.profile.address.city]] - [[item.toOrganisation.status.description]]</span>
+                                    <span>[[item.toOrganisation.profile.address.city]]</span>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +129,7 @@
                     <div class="card-actions">
                         <div class="row actions-row-left-adjusted">
                             <div class="col-xs-6">
-                                <paper-button on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
+                                <paper-button raised on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
                             </div>
                             <div class="col-xs-6" hidden$="[[hidelocation]]">
                                 <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">[[item.distance]]km</paper-button>
@@ -146,180 +142,179 @@
     </template>
 
     <script>
-        /**
-         * `oc-list-organisations`
-         * List of organisations that can be paid or orderedfrom
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/index.html
-         */
-        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
-            static get is() { return 'oc-list-organisations'; }
-            static get properties() {
-                return {
-                    //TODO: change this to work with organisation store
-                    _marketplaceId: {
-                        type: Number,
-                        statePath: 'config.organisationId'
-                    },
-                    _organisationId: {
-                        type: Number,
-                        statePath: 'organisation.id'
-                    },
-                    organisations: {
-                        type: Array,
-                        notify: true
-                    },
-                    latitude: {
-                        type: String,
-                        value: -33.924246
-                    },
-                    longitude: {
-                        type: String,
-                        value: 18.41398
-                    },
-                    radius: {
-                        type: String,
-                        value: 10000000
-                    },
-                    hidelocation: {
-                        type: Boolean,
-                        value: false,
-                    },
-                    //display public connections first
-                    marketplace: {
-                        type: Boolean,
-                        value: true,
-                    }
-                };
-            }
+		/**
+		 * `oc-list-organisations`
+		 * List of organisations that can be paid or orderedfrom
+		 *
+		 * @customElement
+		 * @polymer
+		 * @demo demo/index.html
+		 */
+		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
+			static get is() { return 'oc-list-organisations'; }
+			static get properties() {
+				return {
+					//TODO: change this to work with organisation store
+					_marketplaceId: {
+						type: Number,
+						statePath: 'config.organisationId'
+					},
+					_organisationId: {
+						type: Number,
+						statePath: 'organisation.id'
+					},
+					organisations: {
+						type: Array,
+						notify: true
+					},
+					latitude: {
+						type: String,
+						value: -33.924246
+					},
+					longitude: {
+						type: String,
+						value: 18.41398
+					},
+					radius: {
+						type: String,
+						value: 10000000
+					},
+					hidelocation: {
+						type: Boolean,
+					},
+					//display public connections first
+					marketplace: {
+						type: Boolean,
+						value: true,
+					}
+				};
+			}
 
-            static get observers(){
-                return [
-                    '_fetchOrganisations(marketplace,_organisationId)',
-                    '_fetchMarketplace(marketplace,_marketplaceId)'
+			static get observers(){
+				return [
+					'_fetchOrganisations(marketplace,_organisationId)',
+					'_fetchMarketplace(marketplace,_marketplaceId)'
 
-                ]
-            }
+				]
+			}
 
-            ready() {
-                super.ready();
-            }
-
-
-            //fetches private
-            _fetchOrganisations(marketplace,organisationId) {
-                if((organisationId)
-                    &&(!marketplace)) {
-                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-                }
-            }
-
-            //fetches public connections
-            _fetchMarketplace(marketplace, organisationId) {
-                if((organisationId)
-                    &&(marketplace)){
-                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-                }
-            }
-
-            _getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace) {
-                this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace)
-                    .then(function(request){
-
-                        let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
-
-                        this.organisations = this._calculateDistances(data);
-                    }.bind(this));
-            }
-
-            _payOrganisation(e) {
-                // Notify of payment
-                this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : false}
-                }));
-            }
-
-            _viewProductList(e) {
-                this.dispatchEvent(new CustomEvent('oc-product-list', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : true}
-                }));
-            }
+			ready() {
+				super.ready();
+			}
 
 
+			//fetches private
+			_fetchOrganisations(marketplace,organisationId) {
+				if((organisationId)
+					&&(!marketplace)) {
+					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+				}
+			}
 
-            /**
-             * Calculated the distance between current location and organisations
-             *
-             */
-            _calculateDistances(organistations) {
-                var calculatedOrganisations=[];
+			//fetches public connections
+			_fetchMarketplace(marketplace, organisationId) {
+				if((organisationId)
+					&&(marketplace)){
+					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+				}
+			}
 
-                for (var i = 0; i < organistations.length; i++) {
-                    calculatedOrganisations[i] = organistations[i];
-                    if(organistations[i].toOrganisation.profile.address !== null) {
-                        calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
-                    }else{
-                        calculatedOrganisations[i].distance = "N/A"
-                    }
-                }
-                return calculatedOrganisations;
-            }
+			_getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace) {
+				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace)
+					.then(function(request){
 
-            /**
-             * Calculates the distance between two geo corditanes
-             * @param lat1 lattiude of starting point
-             * @param lon1 longitude of starting point
-             * @param lat2 lattiude of ending point
-             * @param lon2 longitude of ending point
-             * @returns {number}
-             * @private
-             */
-            _getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-                var R = 6371; // Radius of the earth in km
-                var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
-                var dLon = this._deg2rad(lon2-lon1);
-                var a =
-                    Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
-                    Math.sin(dLon/2) * Math.sin(dLon/2)
-                ;
-                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                var d = R * c; // Distance in km
-                return d.toFixed(0);
-            }
+						let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
 
-            /**
-             * converts degrees to Rad
-             * @param deg
-             * @returns {number}
-             */
-            _deg2rad(deg) {
-                return deg * (Math.PI/180)
-            }
+						this.organisations = this._calculateDistances(data);
+					}.bind(this));
+			}
 
-            /**
-             * Sort from closest to furthest
-             * @param a first record
-             * @param b second record
-             * @returns {number} returns new position
-             * @private
-             */
-            _sort(a, b) {
-                if (a.distance === b.distance) return 0;
-                return Number(a.distance) < Number(b.distance) ? -1 : 1;
-            }
+			_payOrganisation(e) {
+				// Notify of payment
+				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+					bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : false}
+				}));
+			}
 
-            _calculateImage(image){
-                if(image === null){
-                    return '../../images/elmi-distributors.png';
-                }else{
-                    return "https://test-static.ordercloud.com/" + image;
-                }
-            }
-        }
+			_viewProductList(e) {
+				this.dispatchEvent(new CustomEvent('oc-product-list', {
+					bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : true}
+				}));
+			}
 
-        window.customElements.define(OcListOrganisations.is, OcListOrganisations);
+
+
+			/**
+			 * Calculated the distance between current location and organisations
+			 *
+			 */
+			_calculateDistances(organistations) {
+				var calculatedOrganisations=[];
+
+				for (var i = 0; i < organistations.length; i++) {
+					calculatedOrganisations[i] = organistations[i];
+					if(organistations[i].toOrganisation.profile.address !== null) {
+						calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
+					}else{
+						calculatedOrganisations[i].distance = "N/A"
+					}
+				}
+				return calculatedOrganisations;
+			}
+
+			/**
+			 * Calculates the distance between two geo corditanes
+			 * @param lat1 lattiude of starting point
+			 * @param lon1 longitude of starting point
+			 * @param lat2 lattiude of ending point
+			 * @param lon2 longitude of ending point
+			 * @returns {number}
+			 * @private
+			 */
+			_getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+				var R = 6371; // Radius of the earth in km
+				var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
+				var dLon = this._deg2rad(lon2-lon1);
+				var a =
+					Math.sin(dLat/2) * Math.sin(dLat/2) +
+					Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
+					Math.sin(dLon/2) * Math.sin(dLon/2)
+				;
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+				var d = R * c; // Distance in km
+				return d.toFixed(0);
+			}
+
+			/**
+			 * converts degrees to Rad
+			 * @param deg
+			 * @returns {number}
+			 */
+			_deg2rad(deg) {
+				return deg * (Math.PI/180)
+			}
+
+			/**
+			 * Sort from closest to furthest
+			 * @param a first record
+			 * @param b second record
+			 * @returns {number} returns new position
+			 * @private
+			 */
+			_sort(a, b) {
+				if (a.distance === b.distance) return 0;
+				return Number(a.distance) < Number(b.distance) ? -1 : 1;
+			}
+
+			_calculateImage(image){
+				if(image === null){
+					return '../../images/elmi-distributors.png';
+				}else{
+					return "https://test-static.ordercloud.com/" + image;
+				}
+			}
+		}
+
+		window.customElements.define(OcListOrganisations.is, OcListOrganisations);
     </script>
 </dom-module>
