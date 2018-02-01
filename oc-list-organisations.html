@@ -17,9 +17,11 @@
                 color :#000;
                 background: #fff;
             }
+
             h2 {
                 font-size:1.375em !important;
             }
+
             .category-heading {
                 border-top: 1px #cecece solid;
                 border-bottom: 1px #cecece solid;
@@ -28,28 +30,31 @@
                 line-height:2.6;
                 font-weight:bold;
             }
+
             .heading-label {
                 font-size:1.13em !important;
                 margin: 20px 0 !important;
 
             }
+
             .organisation-icon {
                 padding:0 5px;
                 width: 24px;
             }
+
             .organisation-title {
                 margin-top:0;
+                margin-bottom:0;
             }
 
-            .favourite-icon {
-                width: 24px;
-            }
+
             paper-card {
                 width:100%;
                 -webkit-border-radius: 6px;
                 -moz-border-radius: 6px;
                 border-radius: 6px;
             }
+
             .organisation-logo-container {
                 position: absolute;
                 top: 4px;
@@ -58,19 +63,20 @@
                 width: 96px;
                 background: #fff;
             }
+
             .organisation-logo-container img {
                 width: 100%;
                 margin: 6px;
             }
+
             .card-content {
                 margin-left:96px;
             }
+
             .card-actions {
                 margin-left:112px;
             }
-            .actions-row-left-adjusted {
-                margin-left: -32px !important;
-            }
+
             .organisation-logo-container {
                 display: flex;
                 align-items: center;
@@ -82,7 +88,8 @@
                 width: 96px;
                 background: #fff;
             }
-            organisation-title-container {
+
+            .organisation-title-container {
                 margin-right:25px;
                 vertical-align: middle
             }
@@ -94,12 +101,32 @@
             .card-content {
                 margin-left:96px;
             }
+
             .card-actions {
                 margin-left:112px;
+                border-top: 0px;
+                bottom: 3px;
             }
-            .actions-row-left-adjusted {
-                margin-left: -32px !important;
+
+            .action-button {
+                width: 100%;
+                margin-bottom: 6px;
             }
+
+            .pay-button {
+                background-color: #e0992f;
+                color: white;
+            }
+
+            .order-button {
+                background-color: #2BB673;
+                color: white;
+            }
+
+            iron-icon {
+                padding-right: 5px;
+            }
+
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
         <div class="container-fluid">
@@ -127,9 +154,12 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <div class="row actions-row-left-adjusted">
+                        <div class="row">
                             <div class="col-xs-6">
-                                <paper-button raised on-tap="_payOrganisation"><img src="../../images/Pay-Icon.png" alt="Pay Icon" class="organisation-icon">Pay</paper-button>
+                                <paper-button class="action-button pay-button" raised on-tap="_payOrganisation"><iron-icon icon="icons:payment"></iron-icon>Pay</paper-button>
+                            </div>
+                            <div class="col-xs-6">
+                                <paper-button class="action-button order-button" raised on-tap="_viewProductList"><iron-icon icon="icons:assignment"></iron-icon>Shop</paper-button>
                             </div>
                             <div class="col-xs-6" hidden$="[[hidelocation]]">
                                 <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">[[item.distance]]km</paper-button>
