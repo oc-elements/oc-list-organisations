@@ -55,26 +55,13 @@
                 border-radius: 6px;
             }
 
-            .organisation-logo-container {
-                position: absolute;
-                top: 4px;
-                left: 0;
-                bottom: 0;
-                width: 96px;
-                background: #fff;
-            }
-
             .organisation-logo-container img {
                 width: 100%;
                 margin: 6px;
             }
 
-            .card-content {
-                margin-left: 115px;
-            }
-
-            .card-actions {
-                margin-left:112px;
+            .card-content, .card-actions  {
+                margin-left: 135px;
             }
 
             .organisation-logo-container {
@@ -85,8 +72,10 @@
                 top: 4px;
                 left: 0;
                 bottom: 0;
-                width: 96px;
+                width: 122px;
                 background: #fff;
+                border: 1px solid #ccc;
+                margin: 10px;
             }
 
             .organisation-title-container {
@@ -95,22 +84,18 @@
             }
             .organisation-logo-container img {
                 width: 100%;
-                margin: 6px;
-            }
-
-            .card-content {
-                margin-left:96px;
+                margin:0;
+                padding:5px;
             }
 
             .card-actions {
-                margin-left:112px;
                 border-top: 0px;
                 bottom: 3px;
             }
 
             .action-button {
                 width: 100%;
-                margin-bottom: 6px;
+                margin:0 0 6px 0;
             }
 
             .pay-button {
@@ -127,6 +112,10 @@
                 padding-right: 5px;
             }
 
+            .organisation-logo {
+                margin: 6px;
+            }
+
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
         <div class="container-fluid">
@@ -141,7 +130,9 @@
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
                     <div class="organisation-logo-container" on-tap="_viewProductList">
-                        <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail">
+                        <div class="organisation-logo">
+                            <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail">
+                        </div>
                     </div>
                     <div class="card-content">
                         <div class="row">
