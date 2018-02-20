@@ -103,6 +103,11 @@
                 margin:0 0 6px 0;
             }
 
+            .button-container {
+                padding-right: 8px !important;
+                padding-left: 4px !important;
+            }
+
             .pay-button {
                 background-color: #e0992f;
                 color: white;
@@ -141,20 +146,20 @@
                     </div>
                     <div class="card-content">
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 button-container">
                                 <div class="organisation-title-container" on-tap="_viewProductList">
                                     <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
-                                    <span>[[item.toOrganisation.profile.address.city]]</span>
+                                    <span class="text-capitalize">[[item.toOrganisation.profile.address.city]]</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-actions">
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 button-container">
                                 <paper-button class="action-button pay-button" raised on-tap="_payOrganisation"><iron-icon icon="icons:payment"></iron-icon>Pay</paper-button>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 button-container">
                                 <paper-button class="action-button order-button" raised on-tap="_viewProductList"><iron-icon icon="icons:assignment"></iron-icon>Shop</paper-button>
                             </div>
                             <div class="col-xs-6" hidden$="[[hidelocation]]">
