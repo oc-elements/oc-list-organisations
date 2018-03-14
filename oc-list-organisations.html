@@ -136,7 +136,7 @@
         <div class="container-fluid">
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
-                    <div class="organisation-logo-container" on-tap="_viewProductList">
+                    <div class="organisation-logo-container">
                         <div class="organisation-logo">
                             <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail">
                         </div>
@@ -144,7 +144,7 @@
                     <div class="card-content">
                         <div class="row">
                             <div class="col-xs-12 button-container">
-                                <div on-tap="_viewProductList">
+                                <div>
                                     <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
                                     <span class="text-capitalize">[[item.toOrganisation.profile.address.city]]</span>
                                 </div>
@@ -269,8 +269,6 @@
 					bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : true}
 				}));
 			}
-
-
 
 			/**
 			 * Calculated the distance between current location and organisations
