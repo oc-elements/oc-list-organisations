@@ -131,7 +131,7 @@
             <div class="row category-heading">
                 <div class="col-xs-12">
                     <span class="heading-label">Shops</span>
-                    <span class="pull-right"><paper-toggle-button checked="{{!marketplace}}">Show Private</paper-toggle-button></span>
+                    <span class="pull-right"><paper-toggle-button id="marketToggle" checked="{{marketplace}}" >Show Public</paper-toggle-button></span>
                 </div>
             </div>
         </div>
@@ -215,7 +215,7 @@
                     //display public connections first
                     marketplace: {
                         type: Boolean,
-                        value: true,
+                        statePath: 'identity.marketplace'
                     }
                 };
             }
@@ -230,6 +230,13 @@
 
             ready() {
                 super.ready();
+                this.$.marketToggle.addEventListener('change', function () {
+                    if (this.$.marketToggle.checked) {
+                        this.dispatch('receiveMarketplace', true);
+                    } else {
+                        this.dispatch('receiveMarketplace', false);
+                    }
+                }.bind(this))
             }
 
 
@@ -262,13 +269,13 @@
             _payOrganisation(e) {
                 // Notify of payment
                 this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : this.marketplace}
+                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
                 }));
             }
 
             _viewProductList(e) {
                 this.dispatchEvent(new CustomEvent('oc-product-list', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id, "marketplace" : this.marketplace}
+                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
                 }));
             }
 
