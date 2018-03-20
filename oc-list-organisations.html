@@ -216,7 +216,11 @@
                     marketplace: {
                         type: Boolean,
                         statePath: 'identity.marketplace'
-                    }
+                    },
+					_environment: {
+						type: String,
+						statePath: 'config.environment'
+					},
                 };
             }
 
@@ -344,9 +348,12 @@
             _calculateImage(image){
                 if(image === null){
                     return '../../images/icon-144x144.png';
-                }else{
-                    return "https://test-static.ordercloud.com/" + image;
-                }
+				}else{
+					if (this._environment === "prod")
+						return `https://static.ordercloud.com/${image}`;
+					else
+						return "https://test-static.ordercloud.com/" + image;
+				}
             }
         }
 
