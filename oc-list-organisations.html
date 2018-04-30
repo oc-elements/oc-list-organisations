@@ -3,6 +3,7 @@
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
+<link rel="import" href="../oc-form-container/oc-form-container.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
@@ -10,353 +11,280 @@
 
 <dom-module id="oc-list-organisations">
     <template>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
         <style>
             :host {
-
-                color :#000;
-                background: #fff;
-            }
-
-            h2 {
-                font-size:1.375em !important;
-            }
-
-            .category-heading {
-                border-top: 1px #cecece solid;
-                border-bottom: 1px #cecece solid;
-                background: #f8f8f8;
                 color: #000;
-                line-height:2.6;
-                font-weight:bold;
-            }
-
-            .heading-label {
-                font-size:1.13em !important;
-                margin: 20px 0 !important;
-
-            }
-
-            .organisation-icon {
-                padding:0 5px;
-                width: 24px;
-            }
-
-            .organisation-title {
-                margin-top:0;
-                margin-bottom:0;
-                font-size:18px !important;
-            }
-
-
-            paper-card {
-                width:100%;
-                -webkit-border-radius: 6px;
-                -moz-border-radius: 6px;
-                border-radius: 6px;
-            }
-
-            .organisation-logo-container img {
-                width: 100%;
-                margin: 6px;
-            }
-
-            .card-content, .card-actions  {
-                margin-left: 135px;
-
-            }
-            .card-content {
-                padding:8px 10px 10px 10px;
-
-            }
-
-            .organisation-logo-container {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                width: 114px;
                 background: #fff;
-                border: 1px solid #ccc;
-                margin: 10px;
-            }
-
-            .organisation-logo-container img {
-                width: 100%;
-                margin:0;
-                padding:10px;
-            }
-
-            .card-actions {
-                border-top: 0px;
-                padding-left:10px;
-            }
-
-            .action-button {
-                width: 100%;
-                margin:0 0 6px 0;
-            }
-
-            .button-container {
-                padding-right: 8px !important;
-                padding-left: 4px !important;
             }
 
             .pay-button {
                 background-color: #e0992f;
-                color: white;
-                font-weight:bold;
             }
 
             .order-button {
                 background-color: #000;
-                color: white;
-                font-weight:bold;
             }
 
             iron-icon {
                 padding-right: 5px;
             }
 
-            .organisation-logo {
-                margin: 0;
+            paper-card {
+                width: 100vw;
+                left: 0;
+                margin-left: -15px;
+                margin-bottom: 5px;
+            }
+
+            paper-button {
+                height: 2.5em;
+                color: white;
+                font-weight: bold;
+
+                width: 100%;
+                margin: 6px 0;
+            }
+
+            .shop-location {
+                word-break: break-word;
+                font-size: 0.8em;
+                margin-top: 10px;
+            }
+
+            .button-container {
+                border-left: 1px white solid;
+                margin: auto;
+                font-size: 0.9em;
             }
 
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
-        <div class="container-fluid">
-            <div class="row category-heading">
-                <div class="col-xs-12">
-                    <span class="heading-label">Shops</span>
-                    <span class="pull-right"><paper-toggle-button id="marketToggle" checked="{{marketplace}}" >Show Public</paper-toggle-button></span>
-                </div>
+        <oc-form-container header="Shops">
+            <div slot="header-content">
+                <paper-toggle-button id="marketToggle" checked="{{marketplace}}">Show Public</paper-toggle-button>
             </div>
-        </div>
-        <div class="container-fluid">
+            <div style="margin-top: -8px;"></div> <!-- Place holder to override margin of container -->
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
-                    <div class="organisation-logo-container">
-                        <div class="organisation-logo">
-                            <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail">
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="row">
-                            <div class="col-xs-12 button-container">
-                                <div>
-                                    <h2 class="organisation-title">[[item.toOrganisation.name]]</h2>
-                                    <span class="text-capitalize">[[item.toOrganisation.profile.address.city]]</span>
-                                </div>
+                    <div class="container">
+                        <div class="row" style="background-color: #d3d3d3b8">
+                            <div class="col-auto" style="background-color: white; display: flex; align-items: center">
+                                <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]"
+                                     alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <div class="row">
-                            <div class="col-xs-12 button-container">
-                                <paper-button class="action-button pay-button" on-tap="_payOrganisation"><iron-icon icon="icons:payment"></iron-icon>Pay</paper-button>
+                            <div class="col m-auto">
+                                <div style="font-size: 1em; line-height: normal">[[item.toOrganisation.name]]</div>
+                                <div class="shop-location">[[item.toOrganisation.profile.address.city]]</div>
                             </div>
-                            <div class="col-xs-6 button-container" hidden>
-                                <paper-button class="action-button order-button" on-tap="_viewProductList"><iron-icon icon="icons:assignment"></iron-icon>Shop</paper-button>
-                            </div>
-                            <div class="col-xs-6" hidden$="[[hidelocation]]">
-                                <paper-button><img src="../../images/Map-Pin-Icon.png" alt="Map Pin Icon" class="organisation-icon">[[item.distance]]km</paper-button>
+                            <div class="col button-container">
+                                <paper-button class="pay-button" on-tap="_payOrganisation">
+                                    <iron-icon icon="icons:payment"></iron-icon>
+                                    Pay
+                                </paper-button>
+                                <!-- This will be uncommented as soon as order go live -->
+                                <!--<paper-button class="order-button" disabled on-tap="_viewProductList">
+                                    <iron-icon icon="icons:assignment"></iron-icon>
+                                    Orders
+                                </paper-button>-->
                             </div>
                         </div>
                     </div>
                 </paper-card>
             </template>
-        </div>
+        </oc-form-container>
+
     </template>
 
     <script>
-        /**
-         * `oc-list-organisations`
-         * List of organisations that can be paid or orderedfrom
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/index.html
-         */
-        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
-            static get is() { return 'oc-list-organisations'; }
-            static get properties() {
-                return {
-                    //TODO: change this to work with organisation store
-                    _marketplaceId: {
-                        type: Number,
-                        statePath: 'config.organisationId'
-                    },
-                    _organisationId: {
-                        type: Number,
-                        statePath: 'organisation.id'
-                    },
-                    organisations: {
-                        type: Array,
-                        notify: true
-                    },
-                    latitude: {
-                        type: String,
-                        value: -33.924246
-                    },
-                    longitude: {
-                        type: String,
-                        value: 18.41398
-                    },
-                    radius: {
-                        type: String,
-                        value: 10000000
-                    },
-                    hidelocation: {
-                        type: Boolean,
-                    },
-                    //display public connections first
-                    marketplace: {
-                        type: Boolean,
-                        statePath: 'identity.marketplace'
-                    },
+		/**
+		 * `oc-list-organisations`
+		 * List of organisations that can be paid or orderedfrom
+		 *
+		 * @customElement
+		 * @polymer
+		 * @demo demo/index.html
+		 */
+		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
+			static get is() {
+				return 'oc-list-organisations';
+			}
+
+			static get properties() {
+				return {
+					//TODO: change this to work with organisation store
+					_marketplaceId: {
+						type: Number,
+						statePath: 'config.organisationId'
+					},
+					_organisationId: {
+						type: Number,
+						statePath: 'organisation.id'
+					},
+					organisations: {
+						type: Array,
+						notify: true
+					},
+					latitude: {
+						type: String,
+						value: -33.924246
+					},
+					longitude: {
+						type: String,
+						value: 18.41398
+					},
+					radius: {
+						type: String,
+						value: 10000000
+					},
+					hidelocation: {
+						type: Boolean,
+					},
+					//display public connections first
+					marketplace: {
+						type: Boolean,
+						statePath: 'identity.marketplace'
+					},
 					_environment: {
 						type: String,
 						statePath: 'config.environment'
 					},
-                };
-            }
+				};
+			}
 
-            static get observers(){
-                return [
-                    '_fetchOrganisations(marketplace,_organisationId)',
-                    '_fetchMarketplace(marketplace,_marketplaceId)'
+			static get observers() {
+				return [
+					'_fetchOrganisations(marketplace,_organisationId)',
+					'_fetchMarketplace(marketplace,_marketplaceId)'
 
-                ]
-            }
+				]
+			}
 
-            ready() {
-                super.ready();
-                this.$.marketToggle.addEventListener('change', function () {
-                    if (this.$.marketToggle.checked) {
-                        this.dispatch('receiveMarketplace', true);
-                    } else {
-                        this.dispatch('receiveMarketplace', false);
-                    }
-                }.bind(this))
-            }
+			ready() {
+				super.ready();
+				this.$.marketToggle.addEventListener('change', function () {
+					if (this.$.marketToggle.checked) {
+						this.dispatch('receiveMarketplace', true);
+					} else {
+						this.dispatch('receiveMarketplace', false);
+					}
+				}.bind(this))
+			}
 
 
-            //fetches private
-            _fetchOrganisations(marketplace,organisationId) {
-                if((organisationId)
-                    &&(!marketplace)) {
-                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-                }
-            }
+			//fetches private
+			_fetchOrganisations(marketplace, organisationId) {
+				if ((organisationId)
+					&& (!marketplace)) {
+					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+				}
+			}
 
-            //fetches public connections
-            _fetchMarketplace(marketplace, organisationId) {
-                if((organisationId)
-                    &&(marketplace)){
-                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-                }
-            }
+			//fetches public connections
+			_fetchMarketplace(marketplace, organisationId) {
+				if ((organisationId)
+					&& (marketplace)) {
+					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+				}
+			}
 
-            _getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace) {
-                this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat ,long , page, pagesize, marketplace)
-                    .then(function(request){
+			_getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace) {
+				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace)
+					.then(function (request) {
 
-                        let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
+						let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
 
-                        this.organisations = this._calculateDistances(data);
-                    }.bind(this));
-            }
+						this.organisations = this._calculateDistances(data);
+					}.bind(this));
+			}
 
-            _payOrganisation(e) {
-                // Notify of payment
-                this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
-                }));
-            }
+			_payOrganisation(e) {
+				// Notify of payment
+				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+				}));
+			}
 
-            _viewProductList(e) {
-                this.dispatchEvent(new CustomEvent('oc-product-list', {
-                    bubbles: true, composed: true, detail: {"organisationId" :  e.model.item.toOrganisation.id}
-                }));
-            }
+			_viewProductList(e) {
+				this.dispatchEvent(new CustomEvent('oc-product-list', {
+					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+				}));
+			}
 
-            /**
-             * Calculated the distance between current location and organisations
-             *
-             */
-            _calculateDistances(organistations) {
-                var calculatedOrganisations=[];
+			/**
+			 * Calculated the distance between current location and organisations
+			 *
+			 */
+			_calculateDistances(organistations) {
+				var calculatedOrganisations = [];
 
-                for (var i = 0; i < organistations.length; i++) {
-                    calculatedOrganisations[i] = organistations[i];
-                    if(organistations[i].toOrganisation.profile.address !== null) {
-                        calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
-                    }else{
-                        calculatedOrganisations[i].distance = "N/A"
-                    }
-                }
-                return calculatedOrganisations;
-            }
+				for (var i = 0; i < organistations.length; i++) {
+					calculatedOrganisations[i] = organistations[i];
+					if (organistations[i].toOrganisation.profile.address !== null) {
+						calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
+					} else {
+						calculatedOrganisations[i].distance = "N/A"
+					}
+				}
+				return calculatedOrganisations;
+			}
 
-            /**
-             * Calculates the distance between two geo corditanes
-             * @param lat1 lattiude of starting point
-             * @param lon1 longitude of starting point
-             * @param lat2 lattiude of ending point
-             * @param lon2 longitude of ending point
-             * @returns {number}
-             * @private
-             */
-            _getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-                var R = 6371; // Radius of the earth in km
-                var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
-                var dLon = this._deg2rad(lon2-lon1);
-                var a =
-                    Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
-                    Math.sin(dLon/2) * Math.sin(dLon/2)
-                ;
-                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                var d = R * c; // Distance in km
-                return d.toFixed(0);
-            }
+			/**
+			 * Calculates the distance between two geo corditanes
+			 * @param lat1 lattiude of starting point
+			 * @param lon1 longitude of starting point
+			 * @param lat2 lattiude of ending point
+			 * @param lon2 longitude of ending point
+			 * @returns {number}
+			 * @private
+			 */
+			_getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+				var R = 6371; // Radius of the earth in km
+				var dLat = this._deg2rad(lat2 - lat1);  // deg2rad below
+				var dLon = this._deg2rad(lon2 - lon1);
+				var a =
+					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+					Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
+					Math.sin(dLon / 2) * Math.sin(dLon / 2)
+				;
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+				var d = R * c; // Distance in km
+				return d.toFixed(0);
+			}
 
-            /**
-             * converts degrees to Rad
-             * @param deg
-             * @returns {number}
-             */
-            _deg2rad(deg) {
-                return deg * (Math.PI/180)
-            }
+			/**
+			 * converts degrees to Rad
+			 * @param deg
+			 * @returns {number}
+			 */
+			_deg2rad(deg) {
+				return deg * (Math.PI / 180)
+			}
 
-            /**
-             * Sort from closest to furthest
-             * @param a first record
-             * @param b second record
-             * @returns {number} returns new position
-             * @private
-             */
-            _sort(a, b) {
-                if (a.distance === b.distance) return 0;
-                return Number(a.distance) < Number(b.distance) ? -1 : 1;
-            }
+			/**
+			 * Sort from closest to furthest
+			 * @param a first record
+			 * @param b second record
+			 * @returns {number} returns new position
+			 * @private
+			 */
+			_sort(a, b) {
+				if (a.distance === b.distance) return 0;
+				return Number(a.distance) < Number(b.distance) ? -1 : 1;
+			}
 
-            _calculateImage(image){
-                if(image === null){
-                    return '../../images/icon-144x144.png';
-				}else{
+			_calculateImage(image) {
+				if (image === null) {
+					return '../../images/icon-144x144.png';
+				} else {
 					if (this._environment === "prod")
 						return `https://resource.ordercloud.com/${image}`;
 					else
 						return "https://test-static.ordercloud.com/" + image;
 				}
-            }
-        }
+			}
+		}
 
-        window.customElements.define(OcListOrganisations.is, OcListOrganisations);
+		window.customElements.define(OcListOrganisations.is, OcListOrganisations);
     </script>
 </dom-module>
