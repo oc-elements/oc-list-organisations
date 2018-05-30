@@ -14,18 +14,16 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
         <style>
             :host {
-                --paper-toggle-button-checked-button: {
-                    background-color: var(--app-accent-color);
-                };
-                --paper-toggle-button-label-color: white;
+                color: #000;
+                background: #fff;
             }
 
             .pay-button {
-                background-color: var(--app-accent-color);
+                background-color: #e0992f;
             }
 
             .order-button {
-                background-color: var(--app-secondary-color);
+                background-color: #000;
             }
 
             iron-icon {
@@ -33,8 +31,6 @@
             }
 
             paper-card {
-                background-color: var(--app-content-background-color);
-                color: var(--app-primary-color);
                 width: 100vw;
                 left: 0;
                 margin-left: -15px;
@@ -45,7 +41,6 @@
                 height: 2.5em;
                 color: white;
                 font-weight: bold;
-                border-radius: 8px;
 
                 width: 100%;
                 margin: 6px 0;
@@ -65,31 +60,33 @@
 
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
-        <oc-form-container header="Shops">
+        <oc-form-container header="Suppliers">
             <div slot="header-content">
-                <paper-toggle-button class="mr-2" id="marketToggle" checked="{{marketplace}}">Show Public
-                </paper-toggle-button>
+                <paper-toggle-button id="marketToggle" checked="{{marketplace}}">Show Public</paper-toggle-button>
             </div>
             <div style="margin-top: -8px;"></div> <!-- Place holder to override margin of container -->
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
                     <div class="container">
-                        <div class="row">
+                        <div class="row" style="background-color: #d3d3d3b8">
                             <div class="col-auto" style="background-color: white; display: flex; align-items: center">
                                 <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]"
                                      alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
                             </div>
-                            <div class="col-4 m-auto">
+                            <div class="col m-auto">
                                 <div style="font-size: 1em; line-height: normal">[[item.toOrganisation.name]]</div>
                                 <div class="shop-location">[[item.toOrganisation.profile.address.city]]</div>
                             </div>
-                            <div class="col-4 button-container">
-                                <paper-button class="order-button" on-tap="_viewProductList">
-                                    Order
-                                </paper-button>
+                            <div class="col button-container">
                                 <paper-button class="pay-button" on-tap="_payOrganisation">
+                                    <iron-icon icon="icons:payment"></iron-icon>
                                     Pay
                                 </paper-button>
+                                <!-- This will be uncommented as soon as order go live -->
+                                <!--<paper-button class="order-button" disabled on-tap="_viewProductList">
+                                    <iron-icon icon="icons:assignment"></iron-icon>
+                                    Orders
+                                </paper-button>-->
                             </div>
                         </div>
                     </div>
