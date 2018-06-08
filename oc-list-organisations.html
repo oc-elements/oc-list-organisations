@@ -53,27 +53,29 @@
             }
 
             .button-container {
-                border-left: 1px white solid;
                 margin: auto;
                 font-size: 0.9em;
+            }
+            .right-blue-border {
+                border-right:1px solid var(--app-primary-color);
             }
 
         </style>
         <oc-organisation-api id="organisationApi"></oc-organisation-api>
         <oc-form-container header="Suppliers">
-            <div slot="header-content">
+            <div slot="header-content" style="padding-right: 10px">
                 <paper-toggle-button id="marketToggle" checked="{{marketplace}}">Show Public</paper-toggle-button>
             </div>
             <div style="margin-top: -8px;"></div> <!-- Place holder to override margin of container -->
             <template is="dom-repeat" items="[[organisations]]" sort="_sort">
                 <paper-card>
-                    <div class="container">
-                        <div class="row" style="background-color: #d3d3d3b8">
-                            <div class="col-auto" style="background-color: white; display: flex; align-items: center">
+                    <div class="container-fluid">
+                        <div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color)">
+                            <div class="col-auto" style="background-color: white; display: flex; align-items: center; padding: 5px 15px;">
                                 <img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]"
                                      alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
                             </div>
-                            <div class="col m-auto">
+                            <div class="col m-auto right-blue-border">
                                 <div style="font-size: 1em; line-height: normal">[[item.toOrganisation.name]]</div>
                                 <div class="shop-location">[[item.toOrganisation.profile.address.city]]</div>
                             </div>
@@ -97,194 +99,194 @@
     </template>
 
     <script>
-		/**
-		 * `oc-list-organisations`
-		 * List of organisations that can be paid or orderedfrom
-		 *
-		 * @customElement
-		 * @polymer
-		 * @demo demo/index.html
-		 */
-		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
-			static get is() {
-				return 'oc-list-organisations';
-			}
+        /**
+         * `oc-list-organisations`
+         * List of organisations that can be paid or orderedfrom
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'oc-list-organisations';
+            }
 
-			static get properties() {
-				return {
-					//TODO: change this to work with organisation store
-					_marketplaceId: {
-						type: Number,
-						statePath: 'config.organisationId'
-					},
-					_organisationId: {
-						type: Number,
-						statePath: 'organisation.id'
-					},
-					organisations: {
-						type: Array,
-						notify: true
-					},
-					latitude: {
-						type: String,
-						value: -33.924246
-					},
-					longitude: {
-						type: String,
-						value: 18.41398
-					},
-					radius: {
-						type: String,
-						value: 10000000
-					},
-					hidelocation: {
-						type: Boolean,
-					},
-					//display public connections first
-					marketplace: {
-						type: Boolean,
-						statePath: 'identity.marketplace'
-					},
-					_environment: {
-						type: String,
-						statePath: 'config.environment'
-					},
-				};
-			}
+            static get properties() {
+                return {
+                    //TODO: change this to work with organisation store
+                    _marketplaceId: {
+                        type: Number,
+                        statePath: 'config.organisationId'
+                    },
+                    _organisationId: {
+                        type: Number,
+                        statePath: 'organisation.id'
+                    },
+                    organisations: {
+                        type: Array,
+                        notify: true
+                    },
+                    latitude: {
+                        type: String,
+                        value: -33.924246
+                    },
+                    longitude: {
+                        type: String,
+                        value: 18.41398
+                    },
+                    radius: {
+                        type: String,
+                        value: 10000000
+                    },
+                    hidelocation: {
+                        type: Boolean,
+                    },
+                    //display public connections first
+                    marketplace: {
+                        type: Boolean,
+                        statePath: 'identity.marketplace'
+                    },
+                    _environment: {
+                        type: String,
+                        statePath: 'config.environment'
+                    },
+                };
+            }
 
-			static get observers() {
-				return [
-					'_fetchOrganisations(marketplace,_organisationId)',
-					'_fetchMarketplace(marketplace,_marketplaceId)'
+            static get observers() {
+                return [
+                    '_fetchOrganisations(marketplace,_organisationId)',
+                    '_fetchMarketplace(marketplace,_marketplaceId)'
 
-				]
-			}
+                ]
+            }
 
-			ready() {
-				super.ready();
-				this.$.marketToggle.addEventListener('change', function () {
-					if (this.$.marketToggle.checked) {
-						this.dispatch('receiveMarketplace', true);
-					} else {
-						this.dispatch('receiveMarketplace', false);
-					}
-				}.bind(this))
-			}
+            ready() {
+                super.ready();
+                this.$.marketToggle.addEventListener('change', function () {
+                    if (this.$.marketToggle.checked) {
+                        this.dispatch('receiveMarketplace', true);
+                    } else {
+                        this.dispatch('receiveMarketplace', false);
+                    }
+                }.bind(this))
+            }
 
 
-			//fetches private
-			_fetchOrganisations(marketplace, organisationId) {
-				if ((organisationId)
-					&& (!marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-				}
-			}
+            //fetches private
+            _fetchOrganisations(marketplace, organisationId) {
+                if ((organisationId)
+                    && (!marketplace)) {
+                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+                }
+            }
 
-			//fetches public connections
-			_fetchMarketplace(marketplace, organisationId) {
-				if ((organisationId)
-					&& (marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
-				}
-			}
+            //fetches public connections
+            _fetchMarketplace(marketplace, organisationId) {
+                if ((organisationId)
+                    && (marketplace)) {
+                    this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, marketplace);
+                }
+            }
 
-			_getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace) {
-				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace)
-					.then(function (request) {
+            _getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace) {
+                this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace)
+                    .then(function (request) {
 
-						let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
+                        let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
 
-						this.organisations = this._calculateDistances(data);
-					}.bind(this));
-			}
+                        this.organisations = this._calculateDistances(data);
+                    }.bind(this));
+            }
 
-			_payOrganisation(e) {
-				// Notify of payment
-				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
-				}));
-			}
+            _payOrganisation(e) {
+                // Notify of payment
+                this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+                    bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+                }));
+            }
 
-			_viewProductList(e) {
-				this.dispatchEvent(new CustomEvent('oc-product-list', {
-					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
-				}));
-			}
+            _viewProductList(e) {
+                this.dispatchEvent(new CustomEvent('oc-product-list', {
+                    bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+                }));
+            }
 
-			/**
-			 * Calculated the distance between current location and organisations
-			 *
-			 */
-			_calculateDistances(organistations) {
-				var calculatedOrganisations = [];
+            /**
+             * Calculated the distance between current location and organisations
+             *
+             */
+            _calculateDistances(organistations) {
+                var calculatedOrganisations = [];
 
-				for (var i = 0; i < organistations.length; i++) {
-					calculatedOrganisations[i] = organistations[i];
-					if (organistations[i].toOrganisation.profile.address !== null) {
-						calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
-					} else {
-						calculatedOrganisations[i].distance = "N/A"
-					}
-				}
-				return calculatedOrganisations;
-			}
+                for (var i = 0; i < organistations.length; i++) {
+                    calculatedOrganisations[i] = organistations[i];
+                    if (organistations[i].toOrganisation.profile.address !== null) {
+                        calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
+                    } else {
+                        calculatedOrganisations[i].distance = "N/A"
+                    }
+                }
+                return calculatedOrganisations;
+            }
 
-			/**
-			 * Calculates the distance between two geo corditanes
-			 * @param lat1 lattiude of starting point
-			 * @param lon1 longitude of starting point
-			 * @param lat2 lattiude of ending point
-			 * @param lon2 longitude of ending point
-			 * @returns {number}
-			 * @private
-			 */
-			_getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-				var R = 6371; // Radius of the earth in km
-				var dLat = this._deg2rad(lat2 - lat1);  // deg2rad below
-				var dLon = this._deg2rad(lon2 - lon1);
-				var a =
-					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-					Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
-					Math.sin(dLon / 2) * Math.sin(dLon / 2)
-				;
-				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-				var d = R * c; // Distance in km
-				return d.toFixed(0);
-			}
+            /**
+             * Calculates the distance between two geo corditanes
+             * @param lat1 lattiude of starting point
+             * @param lon1 longitude of starting point
+             * @param lat2 lattiude of ending point
+             * @param lon2 longitude of ending point
+             * @returns {number}
+             * @private
+             */
+            _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+                var R = 6371; // Radius of the earth in km
+                var dLat = this._deg2rad(lat2 - lat1);  // deg2rad below
+                var dLon = this._deg2rad(lon2 - lon1);
+                var a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                ;
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = R * c; // Distance in km
+                return d.toFixed(0);
+            }
 
-			/**
-			 * converts degrees to Rad
-			 * @param deg
-			 * @returns {number}
-			 */
-			_deg2rad(deg) {
-				return deg * (Math.PI / 180)
-			}
+            /**
+             * converts degrees to Rad
+             * @param deg
+             * @returns {number}
+             */
+            _deg2rad(deg) {
+                return deg * (Math.PI / 180)
+            }
 
-			/**
-			 * Sort from closest to furthest
-			 * @param a first record
-			 * @param b second record
-			 * @returns {number} returns new position
-			 * @private
-			 */
-			_sort(a, b) {
-				if (a.distance === b.distance) return 0;
-				return Number(a.distance) < Number(b.distance) ? -1 : 1;
-			}
+            /**
+             * Sort from closest to furthest
+             * @param a first record
+             * @param b second record
+             * @returns {number} returns new position
+             * @private
+             */
+            _sort(a, b) {
+                if (a.distance === b.distance) return 0;
+                return Number(a.distance) < Number(b.distance) ? -1 : 1;
+            }
 
-			_calculateImage(image) {
-				if (image === null) {
-					return '../../images/icon-144x144.png';
-				} else {
-					if (this._environment === "prod")
-						return `https://resource.ordercloud.com/${image}`;
-					else
-						return "https://test-static.ordercloud.com/" + image;
-				}
-			}
-		}
+            _calculateImage(image) {
+                if (image === null) {
+                    return '../../images/icon-144x144.png';
+                } else {
+                    if (this._environment === "prod")
+                        return `https://resource.ordercloud.com/${image}`;
+                    else
+                        return "https://test-static.ordercloud.com/" + image;
+                }
+            }
+        }
 
-		window.customElements.define(OcListOrganisations.is, OcListOrganisations);
+        window.customElements.define(OcListOrganisations.is, OcListOrganisations);
     </script>
 </dom-module>
