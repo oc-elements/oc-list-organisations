@@ -83,12 +83,9 @@
 				<template is="dom-repeat" items="[[organisations]]" sort="_sort">
 					<paper-card>
 						<div class="container-fluid">
-							<div class="row"
-								 style="background-color: var(--app-content-background-color); color: var(--app-primary-color)">
-								<div class="col-auto"
-									 style="background-color: white; display: flex; align-items: center; padding: 10px;">
-									<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]"
-										 alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
+							<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color)">
+								<div class="col-auto" style="background-color: white; display: flex; align-items: center; padding: 10px;">
+									<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
 								</div>
 								<div class="col m-auto right-blue-border">
 									<div style="font-size: 1em; line-height: normal">[[item.toOrganisation.name]]</div>
@@ -143,6 +140,15 @@
 						type: Array,
 						notify: true
 					},
+					latitude: {
+						type: String
+					},
+					longitude: {
+						type: String
+					},
+					radius: {
+						type: String
+					},
 					hidelocation: {
 						type: Boolean,
 					},
@@ -190,7 +196,7 @@
 			_fetchOrganisations(organisationId) {
 				if ((organisationId)
 					&& (!this.marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", null, null, null, 1, -1, this.marketplace);
+					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, this.marketplace);
 				}
 			}
 
@@ -215,13 +221,13 @@
 			_payOrganisation(e) {
 				// Notify of payment
 				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+					bubbles: true, composed: true, detail: { "organisationId": e.model.item.toOrganisation.id }
 				}));
 			}
 
 			_viewProductList(e) {
 				this.dispatchEvent(new CustomEvent('oc-product-list', {
-					bubbles: true, composed: true, detail: {"organisationId": e.model.item.toOrganisation.id}
+					bubbles: true, composed: true, detail: { "organisationId": e.model.item.toOrganisation.id }
 				}));
 			}
 
