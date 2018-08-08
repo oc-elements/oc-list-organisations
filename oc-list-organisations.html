@@ -97,10 +97,10 @@
 										Pay
 									</paper-button>
 									<!-- This will be uncommented as soon as order go live -->
-									<paper-button class="order-button" on-tap="_viewProductList">
+									<!-- <paper-button class="order-button" on-tap="_viewProductList">
 										<iron-icon icon="icons:assignment"></iron-icon>
 										Orders
-									</paper-button>
+									</paper-button> -->
 								</div>
 							</div>
 						</div>
@@ -140,18 +140,6 @@
 						type: Array,
 						notify: true
 					},
-					latitude: {
-						type: String,
-						value: -33.924246
-					},
-					longitude: {
-						type: String,
-						value: 18.41398
-					},
-					radius: {
-						type: String,
-						value: 10000000
-					},
 					hidelocation: {
 						type: Boolean,
 					},
@@ -173,9 +161,8 @@
 
 			static get observers() {
 				return [
-					'_fetchOrganisations(_organisationId)',
-					'_fetchMarketplace(_marketplaceId)'
-
+					'_fetchOrganisations(marketplace,_organisationId)',
+					'_fetchMarketplace(marketplace,_marketplaceId)'
 				]
 			}
 
@@ -184,40 +171,35 @@
 				this.$.marketToggle.addEventListener('change', function () {
 					if (this.$.marketToggle.checked) {
 						this.dispatch('receiveMarketplace', true);
-						// this._fetchOrganisations(this._organisationId);
-						this._fetchMarketplace(this._marketplaceId);
 					} else {
 						this.dispatch('receiveMarketplace', false);
-						this._fetchOrganisations(this._organisationId);
-						// this._fetchMarketplace(this._marketplaceId);
 					}
 				}.bind(this))
 			}
 
 
 			//fetches private
-			_fetchOrganisations(organisationId) {
+			_fetchOrganisations(marketplace, organisationId) {
 				if ((organisationId)
-					&& (!this.marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, this.marketplace);
+					&& (!marketplace)) {
+					this._getOrganisationConnections(organisationId, "M", 1, -1, marketplace);
 				}
 			}
-
 			//fetches public connections
-			_fetchMarketplace(organisationId) {
+			_fetchMarketplace(marketplace, organisationId) {
 				if ((organisationId)
-					&& (this.marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", this.radius, this.latitude, this.longitude, 1, -1, this.marketplace);
+					&& (marketplace)) {
+					this._getOrganisationConnections(organisationId, "M", 1, -1, marketplace);
 				}
 			}
 
-			_getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace) {
-				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, radius, lat, long, page, pagesize, marketplace)
+			_getOrganisationConnections(organisationId, type, page, pagesize, marketplace) {
+				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, null, null, null, page, pagesize, marketplace)
 					.then(function (request) {
 
 						let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
 
-						this.organisations = this._calculateDistances(data);
+						this.organisations = data;
 					}.bind(this));
 			}
 
@@ -232,56 +214,6 @@
 				this.dispatchEvent(new CustomEvent('oc-product-list', {
 					bubbles: true, composed: true, detail: { "organisationId": e.model.item.toOrganisation.id }
 				}));
-			}
-
-            /**
-             * Calculated the distance between current location and organisations
-             *
-             */
-			_calculateDistances(organistations) {
-				var calculatedOrganisations = [];
-
-				for (var i = 0; i < organistations.length; i++) {
-					calculatedOrganisations[i] = organistations[i];
-					if (organistations[i].toOrganisation.profile.address !== null) {
-						calculatedOrganisations[i].distance = this._getDistanceFromLatLonInKm(this.latitude, this.longitude, organistations[i].toOrganisation.profile.address.latitude, organistations[i].toOrganisation.profile.address.longitude);
-					} else {
-						calculatedOrganisations[i].distance = "N/A"
-					}
-				}
-				return calculatedOrganisations;
-			}
-
-            /**
-             * Calculates the distance between two geo corditanes
-             * @param lat1 lattiude of starting point
-             * @param lon1 longitude of starting point
-             * @param lat2 lattiude of ending point
-             * @param lon2 longitude of ending point
-             * @returns {number}
-             * @private
-             */
-			_getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-				var R = 6371; // Radius of the earth in km
-				var dLat = this._deg2rad(lat2 - lat1);  // deg2rad below
-				var dLon = this._deg2rad(lon2 - lon1);
-				var a =
-					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-					Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
-					Math.sin(dLon / 2) * Math.sin(dLon / 2)
-					;
-				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-				var d = R * c; // Distance in km
-				return d.toFixed(0);
-			}
-
-            /**
-             * converts degrees to Rad
-             * @param deg
-             * @returns {number}
-             */
-			_deg2rad(deg) {
-				return deg * (Math.PI / 180)
 			}
 
             /**
