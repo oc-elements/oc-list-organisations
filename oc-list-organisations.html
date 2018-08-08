@@ -73,7 +73,7 @@
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="Suppliers">
 			<div slot="header-content" style="padding-right: 10px">
-				<paper-toggle-button id="marketToggle" checked="{{marketplace}}">Show Public</paper-toggle-button>
+				<paper-toggle-button id="marketToggle" checked="[[marketplace]]">Show Public</paper-toggle-button>
 			</div>
 			<iron-input bind-value="{{_searchText}}" class="row">
 				<input class="search-input" placeholder="Search..." type="text">
