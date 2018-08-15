@@ -96,7 +96,7 @@
 									</paper-button>
 									<paper-button class="order-button" on-tap="_viewProductList">
 										<iron-icon icon="icons:assignment"></iron-icon>
-										Order
+										Orders
 									</paper-button>
 								</div>
 							</div>
@@ -122,57 +122,57 @@
                 return 'oc-list-organisations';
             }
 
-            static get properties() {
-                return {
-                    //TODO: change this to work with organisation store
-                    _marketplaceId: {
-                        type: Number,
-                        statePath: 'config.organisationId'
-                    },
-                    _organisationId: {
-                        type: Number,
-                        statePath: 'organisation.id'
-                    },
-                    organisations: {
-                        type: Array,
-                        notify: true
-                    },
-                    latitude: {
-                        type: String,
-                        value: -33.924246
-                    },
-                    longitude: {
-                        type: String,
-                        value: 18.41398
-                    },
-                    radius: {
-                        type: String,
-                        value: 10000000
-                    },
-                    hidelocation: {
-                        type: Boolean,
-                    },
-                    //display public connections first
-                    marketplace: {
-                        type: Boolean,
-                        statePath: 'identity.marketplace'
-                    },
-                    _environment: {
-                        type: String,
-                        statePath: 'config.environment'
-                    },
-                    _searchText: {
-                        type: String,
-                        observer: '_filter'
-                    }
-                };
-            }
+			static get properties() {
+				return {
+					//TODO: change this to work with organisation store
+					_marketplaceId: {
+						type: Number,
+						statePath: 'config.organisationId'
+					},
+					_organisationId: {
+						type: Number,
+						statePath: 'organisation.id'
+					},
+					organisations: {
+						type: Array,
+						notify: true
+					},
+					latitude: {
+						type: String,
+						value: -33.924246
+					},
+					longitude: {
+						type: String,
+						value: 18.41398
+					},
+					radius: {
+						type: String,
+						value: 10000000
+					},
+					hidelocation: {
+						type: Boolean,
+					},
+					//display public connections first
+					marketplace: {
+						type: Boolean,
+						statePath: 'identity.marketplace'
+					},
+					_environment: {
+						type: String,
+						statePath: 'config.environment'
+					},
+					_searchText: {
+						type: String,
+						observer: '_filter'
+					}
+				};
+			}
 
-            static get observers() {
-                return [
-                    '_fetchSuppliers(_organisationId)'
-                ]
-            }
+			static get observers() {
+				return [
+					'_fetchSuppliers(_organisationId)'
+				]
+			}
 
             ready() {
                 super.ready();
