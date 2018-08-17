@@ -72,24 +72,22 @@
 		</style>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="Suppliers">
-			<div slot="header-content" style="padding-right: 10px">
-				<paper-toggle-button id="marketToggle" checked="[[marketplace]]">Show Public</paper-toggle-button>
-			</div>
+			<div slot="header-content" style="padding-right: 10px"></div>
 			<iron-input bind-value="{{_searchText}}" class="row">
 				<input class="search-input" placeholder="Search..." type="text">
 			</iron-input>
 			<!-- Place holder to override margin of container -->
 			<div id="suppliersContainer">
-				<template is="dom-repeat" items="[[organisations]]" sort="_sort">
+				<template is="dom-repeat" items="[[organisations]]">
 					<paper-card>
 						<div class="container-fluid">
 							<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color)">
 								<div class="col-auto" style="background-color: white; display: flex; align-items: center; padding: 10px;">
-									<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
+									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
 								</div>
 								<div class="col m-auto right-blue-border">
-									<div style="font-size: 1em; line-height: normal">[[item.toOrganisation.name]]</div>
-									<div class="shop-location">[[item.toOrganisation.profile.address.city]]</div>
+									<div style="font-size: 1em; line-height: normal">[[item.name]]</div>
+									<div class="shop-location">[[item.profile.address.city]]</div>
 								</div>
 								<div class="col button-container">
 									<paper-button class="pay-button" on-tap="_payOrganisation">
@@ -119,10 +117,10 @@
          * @polymer
          * @demo demo/index.html
          */
-		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
-			static get is() {
-				return 'oc-list-organisations';
-			}
+        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'oc-list-organisations';
+            }
 
 			static get properties() {
 				return {
@@ -138,6 +136,18 @@
 					organisations: {
 						type: Array,
 						notify: true
+					},
+					latitude: {
+						type: String,
+						value: -33.924246
+					},
+					longitude: {
+						type: String,
+						value: 18.41398
+					},
+					radius: {
+						type: String,
+						value: 10000000
 					},
 					hidelocation: {
 						type: Boolean,
@@ -160,110 +170,80 @@
 
 			static get observers() {
 				return [
-					'_fetchOrganisations(marketplace,_organisationId)',
-					'_fetchMarketplace(marketplace,_marketplaceId)'
+					'_fetchSuppliers(_organisationId)'
 				]
 			}
 
-			ready() {
-				super.ready();
-				this.$.marketToggle.addEventListener('change', function () {
-					if (this.$.marketToggle.checked) {
-						this.dispatch('receiveMarketplace', true);
-					} else {
-						this.dispatch('receiveMarketplace', false);
-					}
-				}.bind(this))
-			}
+            ready() {
+                super.ready();
+                this._fetchSuppliers();
+            }
 
 
-			//fetches private
-			_fetchOrganisations(marketplace, organisationId) {
-				if ((organisationId)
-					&& (!marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", 1, -1, marketplace);
-				}
-			}
-			//fetches public connections
-			_fetchMarketplace(marketplace, organisationId) {
-				if ((organisationId)
-					&& (marketplace)) {
-					this._getOrganisationConnections(organisationId, "M", 1, -1, marketplace);
-				}
-			}
+            //fetches all connected organisations
+            _fetchSuppliers(organisationId) {
+                this._getAllSuppliers(organisationId);
+            }
 
-			_getOrganisationConnections(organisationId, type, page, pagesize, marketplace) {
-				this.shadowRoot.querySelector('#organisationApi').getOrganisationConnections(organisationId, type, null, null, null, page, pagesize, marketplace)
-					.then(function (request) {
+            _getAllSuppliers(organisationId) {
+                this.$.organisationApi.getAllOrganisations(organisationId,1,-1)
+                    .then(function (request) {
+                        this.organisations = request.response.results;
+                    }.bind(this));
+            }
 
-						let data = request.response.results.filter(connection => connection.toOrganisation.id !== organisationId);
 
-						this.organisations = data;
-					}.bind(this));
-			}
+            _payOrganisation(e) {
+                // Notify of payment
+                this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+                    bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
+                }));
+            }
 
-			_payOrganisation(e) {
-				// Notify of payment
-				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-					bubbles: true, composed: true, detail: { "organisationId": e.model.item.toOrganisation.id }
-				}));
-			}
+            _viewProductList(e) {
+                this.dispatchEvent(new CustomEvent('oc-product-list', {
+                    bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
+                }));
+            }
 
-			_viewProductList(e) {
-				this.dispatchEvent(new CustomEvent('oc-product-list', {
-					bubbles: true, composed: true, detail: { "organisationId": e.model.item.toOrganisation.id }
-				}));
-			}
 
-            /**
-             * Sort from closest to furthest
-             * @param a first record
-             * @param b second record
-             * @returns {number} returns new position
-             * @private
-             */
-			_sort(a, b) {
-				if (a.distance === b.distance) return 0;
-				return Number(a.distance) < Number(b.distance) ? -1 : 1;
-			}
+            _calculateImage(image) {
+                if (image === null) {
+                    return '../../images/icon-144x144.png';
+                } else {
+                    if (this._environment === "prod")
+                        return `https://resource.ordercloud.com/${image}`;
+                    else
+                        return "https://test-static.ordercloud.com/" + image;
+                }
+            }
 
-			_calculateImage(image) {
-				if (image === null) {
-					return '../../images/icon-144x144.png';
-				} else {
-					if (this._environment === "prod")
-						return `https://resource.ordercloud.com/${image}`;
-					else
-						return "https://test-static.ordercloud.com/" + image;
-				}
-			}
+            // This is for the searching functionality
+            _filterCheck(searchText, item) {
+                if (!item.__templatizeInstance) return true; // Skip template instance
+                const currentValue = item.__templatizeInstance.item.name;
+                if (searchText === "" || currentValue === "") {
+                    return true;
+                } else {
+                    const re = new RegExp(searchText, "gi");
+                    return re.exec(currentValue) != null;
+                }
+            }
 
-			// This is for the searching functionality
-			_filterCheck(searchText, item) {
-				if (!item.__templatizeInstance) return true; // Skip template instance
-				const currentValue = item.__templatizeInstance.item.toOrganisation.name;
-				if (searchText === "" || currentValue === "") {
-					return true;
-				} else {
-					const re = new RegExp(searchText, "gi");
-					return re.exec(currentValue) != null;
-				}
-			}
+            _filter(searchText) {
+                const suppliersContainer = this.$.suppliersContainer;
+                for (let supplier of suppliersContainer.children) {
+                    let display;
+                    if (this._filterCheck(searchText, supplier)) {
+                        display = 'block';
+                    } else {
+                        display = 'none';
+                    }
+                    supplier.style.display = display;
+                }
+            }
+        }
 
-			_filter(searchText) {
-				const suppliersContainer = this.$.suppliersContainer;
-				for (let supplier of suppliersContainer.children) {
-					let display;
-					if (this._filterCheck(searchText, supplier)) {
-						display = 'block';
-					} else {
-						display = 'none';
-					}
-					supplier.style.display = display;
-				}
-			}
-		}
-
-		window.customElements.define(OcListOrganisations.is, OcListOrganisations);
+        window.customElements.define(OcListOrganisations.is, OcListOrganisations);
 	</script>
 </dom-module>
