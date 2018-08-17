@@ -110,141 +110,141 @@
 	</template>
 
 	<script>
-		/**
-		 * `oc-list-organisations`
-		 * List of organisations that can be paid or orderedfrom
-		 *
-		 * @customElement
-		 * @polymer
-		 * @demo demo/index.html
-		 */
-		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
-			static get is() {
-				return 'oc-list-organisations';
-			}
+        /**
+         * `oc-list-organisations`
+         * List of organisations that can be paid or orderedfrom
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'oc-list-organisations';
+            }
 
-			static get properties() {
-				return {
-					//TODO: change this to work with organisation store
-					_marketplaceId: {
-						type: Number,
-						statePath: 'config.organisationId'
-					},
-					_organisationId: {
-						type: Number,
-						statePath: 'organisation.id'
-					},
-					organisations: {
-						type: Array,
-						notify: true
-					},
-					latitude: {
-						type: String,
-						value: -33.924246
-					},
-					longitude: {
-						type: String,
-						value: 18.41398
-					},
-					radius: {
-						type: String,
-						value: 10000000
-					},
-					hidelocation: {
-						type: Boolean,
-					},
-					//display public connections first
-					marketplace: {
-						type: Boolean,
-						statePath: 'identity.marketplace'
-					},
-					_environment: {
-						type: String,
-						statePath: 'config.environment'
-					},
-					_searchText: {
-						type: String,
-						observer: '_filter'
-					}
-				};
-			}
+            static get properties() {
+                return {
+                    //TODO: change this to work with organisation store
+                    _marketplaceId: {
+                        type: Number,
+                        statePath: 'config.organisationId'
+                    },
+                    _organisationId: {
+                        type: Number,
+                        statePath: 'organisation.id'
+                    },
+                    organisations: {
+                        type: Array,
+                        notify: true
+                    },
+                    latitude: {
+                        type: String,
+                        value: -33.924246
+                    },
+                    longitude: {
+                        type: String,
+                        value: 18.41398
+                    },
+                    radius: {
+                        type: String,
+                        value: 10000000
+                    },
+                    hidelocation: {
+                        type: Boolean,
+                    },
+                    //display public connections first
+                    marketplace: {
+                        type: Boolean,
+                        statePath: 'identity.marketplace'
+                    },
+                    _environment: {
+                        type: String,
+                        statePath: 'config.environment'
+                    },
+                    _searchText: {
+                        type: String,
+                        observer: '_filter'
+                    }
+                };
+            }
 
-			static get observers() {
-				return [
-					'_fetchSuppliers(_organisationId)'
-				]
-			}
+            static get observers() {
+                return [
+                    '_fetchSuppliers(_organisationId)'
+                ]
+            }
 
-			ready() {
-				super.ready();
-				this._fetchSuppliers();
-			}
-
-
-			//fetches all connected organisations
-			_fetchSuppliers(organisationId) {
-				this._getAllSuppliers(organisationId);
-			}
-
-			_getAllSuppliers(organisationId) {
-				this.$.organisationApi.getAllOrganisations(organisationId,1,-1)
-					.then(function (request) {
-						this.organisations = request.response.results;
-					}.bind(this));
-			}
+            ready() {
+                super.ready();
+                this._fetchSuppliers();
+            }
 
 
-			_payOrganisation(e) {
-				// Notify of payment
-				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-					bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
-				}));
-			}
+            //fetches all connected organisations
+            _fetchSuppliers(organisationId) {
+                this._getAllSuppliers(organisationId);
+            }
 
-			_viewProductList(e) {
-				this.dispatchEvent(new CustomEvent('oc-product-list', {
-					bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
-				}));
-			}
+            _getAllSuppliers(organisationId) {
+                this.$.organisationApi.getAllOrganisations(organisationId,1,-1)
+                    .then(function (request) {
+                        this.organisations = request.response.results;
+                    }.bind(this));
+            }
 
 
-			_calculateImage(image) {
-				if (image === null) {
-					return '../../images/icon-144x144.png';
-				} else {
-					if (this._environment === "prod")
-						return `https://resource.ordercloud.com/${image}`;
-					else
-						return "https://test-static.ordercloud.com/" + image;
-				}
-			}
+            _payOrganisation(e) {
+                // Notify of payment
+                this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
+                    bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
+                }));
+            }
 
-			// This is for the searching functionality
-			_filterCheck(searchText, item) {
-				if (!item.__templatizeInstance) return true; // Skip template instance
-				const currentValue = item.__templatizeInstance.item.name;
-				if (searchText === "" || currentValue === "") {
-					return true;
-				} else {
-					const re = new RegExp(searchText, "gi");
-					return re.exec(currentValue) != null;
-				}
-			}
+            _viewProductList(e) {
+                this.dispatchEvent(new CustomEvent('oc-product-list', {
+                    bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
+                }));
+            }
 
-			_filter(searchText) {
-				const suppliersContainer = this.$.suppliersContainer;
-				for (let supplier of suppliersContainer.children) {
-					let display;
-					if (this._filterCheck(searchText, supplier)) {
-						display = 'block';
-					} else {
-						display = 'none';
-					}
-					supplier.style.display = display;
-				}
-			}
-		}
 
-		window.customElements.define(OcListOrganisations.is, OcListOrganisations);
+            _calculateImage(image) {
+                if (image === null) {
+                    return '../../images/icon-144x144.png';
+                } else {
+                    if (this._environment === "prod")
+                        return `https://resource.ordercloud.com/${image}`;
+                    else
+                        return "https://test-static.ordercloud.com/" + image;
+                }
+            }
+
+            // This is for the searching functionality
+            _filterCheck(searchText, item) {
+                if (!item.__templatizeInstance) return true; // Skip template instance
+                const currentValue = item.__templatizeInstance.item.name;
+                if (searchText === "" || currentValue === "") {
+                    return true;
+                } else {
+                    const re = new RegExp(searchText, "gi");
+                    return re.exec(currentValue) != null;
+                }
+            }
+
+            _filter(searchText) {
+                const suppliersContainer = this.$.suppliersContainer;
+                for (let supplier of suppliersContainer.children) {
+                    let display;
+                    if (this._filterCheck(searchText, supplier)) {
+                        display = 'block';
+                    } else {
+                        display = 'none';
+                    }
+                    supplier.style.display = display;
+                }
+            }
+        }
+
+        window.customElements.define(OcListOrganisations.is, OcListOrganisations);
 	</script>
 </dom-module>
