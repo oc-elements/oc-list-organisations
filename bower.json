@@ -4,7 +4,7 @@
   "main": "oc-list-organisations.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "oc-organisation-api": "git://github.com/oc-elements/oc-organisation-api#1.4.2",
+    "oc-organisation-api": "git://github.com/oc-elements/oc-organisation-api#2.x",
     "paper-material": "PolymerElements/paper-material#^2.0.0",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
   },
