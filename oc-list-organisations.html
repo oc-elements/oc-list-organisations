@@ -30,6 +30,11 @@
 				padding-right: 5px;
 			}
 
+			iron-input {
+				margin-left: -10px;
+				margin-right: -10px;
+			}
+
 			paper-card {
 				width: 100vw;
 				left: 0;
@@ -68,14 +73,22 @@
 				width: 100%;
 				height: 40px;
 				line-height: 48px;
+
+				margin-bottom: 5px;
+				margin-left: 5px;
+				margin-right: 5px;
 			}
 		</style>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="Suppliers">
-			<div slot="header-content" style="padding-right: 10px"></div>
-			<iron-input bind-value="{{_searchText}}" class="row">
-				<input class="search-input" placeholder="Search..." type="text">
-			</iron-input>
+			<div slot="header-content" style="padding-right: 13px">
+				<iron-icon style="padding: 0" icon="icons:search" on-tap="_onSearch"></iron-icon>
+			</div>
+			<template is="dom-if" if=[[_isSearchActive]]>
+				<iron-input bind-value="{{_searchText}}" class="row">
+					<input class="search-input" placeholder="Search..." type="text">
+				</iron-input>
+			</template>
 			<!-- Place holder to override margin of container -->
 			<div id="suppliersContainer">
 				<template is="dom-repeat" items="[[organisations]]">
@@ -164,6 +177,10 @@
 					_searchText: {
 						type: String,
 						observer: '_filter'
+					},
+					_isSearchActive: {
+						type: Boolean,
+						value: false
 					}
 				};
 			}
@@ -177,6 +194,10 @@
 			ready() {
 				super.ready();
 				this._fetchSuppliers();
+			}
+
+			_onSearch() {
+				this._isSearchActive = !this._isSearchActive;
 			}
 
 
