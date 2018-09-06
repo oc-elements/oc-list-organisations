@@ -107,10 +107,12 @@
 										<iron-icon icon="icons:payment"></iron-icon>
 										Pay
 									</paper-button>
-									<paper-button class="order-button" on-tap="_viewProductList">
-										<iron-icon icon="icons:assignment"></iron-icon>
-										Order
-									</paper-button>
+									<template is="dom-if" if="[[_orderFeature()]]">
+										<paper-button class="order-button" on-tap="_viewProductList">
+												<iron-icon icon="icons:assignment"></iron-icon>
+												Order
+										</paper-button>
+									</template>
 								</div>
 							</div>
 						</div>
@@ -141,6 +143,10 @@
 					_marketplaceId: {
 						type: Number,
 						statePath: 'config.organisationId'
+					},
+					_featureFlags: {
+						type: String,
+						statePath: 'config.featureFlags',
 					},
 					_organisationId: {
 						type: Number,
@@ -194,6 +200,10 @@
 			ready() {
 				super.ready();
 				this._fetchSuppliers();
+			}
+
+			_orderFeature() {
+				return !!this._featureFlags["orders"];
 			}
 
 			_onSearch() {
