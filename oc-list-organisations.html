@@ -43,23 +43,19 @@
 			}
 
 			paper-button {
-				height: 2.5em;
+				height: 32px;
 				color: white;
 				font-weight: bold;
-
-				width: 100%;
-				margin: 6px 0;
-			}
-
-			.shop-location {
-				word-break: break-word;
-				font-size: 0.8em;
-				margin-top: 10px;
+				min-width:100px;
+				margin: 2px 0;
+				float: right;
 			}
 
 			.button-container {
 				margin: auto;
 				font-size: 0.9em;
+				padding-right:5px !important;
+				padding-left:5px !important;
 			}
 
 			.right-blue-border {
@@ -78,6 +74,22 @@
 				margin-left: 5px;
 				margin-right: 5px;
 			}
+			.profile-image {
+				width:86px;
+				height:86px;
+				background: #fff;
+			}
+			.profile-image img {
+				width: 86px;
+				height: 86px;
+			}
+			.organisation-name {
+				font-size: 16px;
+				line-height: normal;
+			}
+			.organisation-location {
+				font-size:14px;
+			}
 		</style>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="Suppliers">
@@ -94,13 +106,13 @@
 				<template is="dom-repeat" items="[[organisations]]">
 					<paper-card>
 						<div class="container-fluid">
-							<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color)">
-								<div class="col-auto" style="background-color: white; display: flex; align-items: center; padding: 10px;">
-									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" style="width: 70px; height: 70px; display: flex">
+							<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+								<div class="profile">
+									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
 								</div>
 								<div class="col m-auto right-blue-border">
-									<div style="font-size: 1em; line-height: normal">[[item.name]]</div>
-									<div class="shop-location">[[item.profile.address.city]]</div>
+									<div class="organisation-name">[[item.name]]</div>
+									<div class="organisation-location">[[item.profile.address.city]]</div>
 								</div>
 								<div class="col button-container">
 									<paper-button class="pay-button" on-tap="_payOrganisation">
