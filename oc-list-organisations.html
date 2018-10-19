@@ -46,7 +46,7 @@
 				height: 32px;
 				color: white;
 				font-weight: bold;
-				min-width:100px;
+				min-width: 100px;
 				margin: 2px 0;
 				float: right;
 			}
@@ -54,8 +54,8 @@
 			.button-container {
 				margin: auto;
 				font-size: 0.9em;
-				padding-right:5px !important;
-				padding-left:5px !important;
+				padding-right: 5px !important;
+				padding-left: 5px !important;
 			}
 
 			.right-blue-border {
@@ -74,21 +74,25 @@
 				margin-left: 5px;
 				margin-right: 5px;
 			}
+
 			.profile-image {
-				width:86px;
-				height:86px;
+				width: 86px;
+				height: 86px;
 				background: #fff;
 			}
+
 			.profile-image img {
 				width: 86px;
 				height: 86px;
 			}
+
 			.organisation-name {
 				font-size: 16px;
 				line-height: normal;
 			}
+
 			.organisation-location {
-				font-size:14px;
+				font-size: 14px;
 			}
 		</style>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
@@ -121,8 +125,8 @@
 									</paper-button>
 									<template is="dom-if" if="[[_orderFeature()]]">
 										<paper-button class="order-button" on-tap="_viewProductList">
-												<iron-icon icon="icons:assignment"></iron-icon>
-												Order
+											<iron-icon icon="icons:assignment"></iron-icon>
+											Order
 										</paper-button>
 									</template>
 								</div>
@@ -239,8 +243,11 @@
 
 			_payOrganisation(e) {
 				// Notify of payment
-				this.dispatchEvent(new CustomEvent('oc-pay-organisation', {
-					bubbles: true, composed: true, detail: { "organisationId": e.model.item.id }
+				// If status is status == new; Take me to payment screen
+				this.dispatchEvent(new CustomEvent('change-page', {
+					bubbles: true, composed: true, detail: {
+						url: '/orders/unpaid-orders/' + e.model.item.id,
+					}
 				}));
 			}
 
