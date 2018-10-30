@@ -11,7 +11,8 @@
 
 <dom-module id="oc-list-organisations">
 	<template>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+		 crossorigin="anonymous">
 		<style>
 			:host {
 				color: #000;
@@ -116,7 +117,7 @@
 								</div>
 								<div class="col m-auto right-blue-border">
 									<div class="organisation-name">[[item.name]]</div>
-									<div class="organisation-location">[[item.profile.address.city]]</div>
+									<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
 								</div>
 								<div class="col button-container">
 									<paper-button class="pay-button" on-tap="_payOrganisation">
@@ -171,21 +172,6 @@
 					organisations: {
 						type: Array,
 						notify: true
-					},
-					latitude: {
-						type: String,
-						value: -33.924246
-					},
-					longitude: {
-						type: String,
-						value: 18.41398
-					},
-					radius: {
-						type: String,
-						value: 10000000
-					},
-					hidelocation: {
-						type: Boolean,
 					},
 					//display public connections first
 					marketplace: {
