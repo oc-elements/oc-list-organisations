@@ -219,10 +219,10 @@
 			}
 
 			_orderFeature() {
-				const hideOrderButton = this._featureFlags["hide-order-button"]
+				const hideOrderButton = this._featureFlags["show-order-button"]
 				if (hideOrderButton && hideOrderButton.length > 0) {
 					for (let id of hideOrderButton) {
-						if (id === this._organisationId) return false
+						if (id === this._organisationId) return true;
 					}
 				}
 
