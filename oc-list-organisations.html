@@ -124,7 +124,7 @@
 										<iron-icon icon="icons:payment"></iron-icon>
 										Pay
 									</paper-button>
-									<template is="dom-if" if="[[_orderFeature()]]">
+									<template is="dom-if" if="[[_orderFeature(item.id)]]">
 										<paper-button class="order-button" on-tap="_viewProductList">
 											<iron-icon icon="icons:assignment"></iron-icon>
 											Order
@@ -204,11 +204,11 @@
 				this._fetchSuppliers();
 			}
 
-			_orderFeature() {
+			_orderFeature(orgId) {
 				const hideOrderButton = this._featureFlags["show-order-button"]
 				if (hideOrderButton && hideOrderButton.length > 0) {
 					for (let id of hideOrderButton) {
-						if (id === this._organisationId) return true;
+						if (id === orgId) return true;
 					}
 				}
 
