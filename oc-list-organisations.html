@@ -12,7 +12,7 @@
 <dom-module id="oc-list-organisations">
 	<template>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-		 crossorigin="anonymous">
+			  crossorigin="anonymous">
 		<style>
 			:host {
 				color: #000;
@@ -96,6 +96,7 @@
 				font-size: 14px;
 			}
 		</style>
+		<app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="Suppliers">
 			<div slot="header-content" style="padding-right: 13px">
@@ -106,34 +107,60 @@
 					<input class="search-input" placeholder="Search..." type="text">
 				</iron-input>
 			</template>
+
 			<!-- Place holder to override margin of container -->
+			<!--Check if order page-->
 			<div id="suppliersContainer">
-				<template is="dom-repeat" items="[[organisations]]">
-					<paper-card>
-						<div class="container-fluid">
-							<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
-								<div class="profile">
-									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+				<template is="dom-if" if="[[_isOrder]]">
+					<template is="dom-repeat" items="[[organisations]]">
+						<template is="dom-if" if="[[_orderFeature(item.id)]]">
+							<paper-card>
+								<div class="container-fluid">
+									<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+										<div class="profile">
+											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+										</div>
+										<div class="col m-auto right-blue-border">
+											<div class="organisation-name">[[item.name]]</div>
+											<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
+										</div>
+										<div class="col button-container">
+											<paper-button class="order-button" on-tap="_viewProductList">
+												<iron-icon icon="icons:assignment"></iron-icon>
+												Order
+											</paper-button>
+										</div>
+									</div>
 								</div>
-								<div class="col m-auto right-blue-border">
-									<div class="organisation-name">[[item.name]]</div>
-									<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
-								</div>
-								<div class="col button-container">
-									<paper-button class="pay-button" on-tap="_payOrganisation">
-										<iron-icon icon="icons:payment"></iron-icon>
-										Pay
-									</paper-button>
-									<template is="dom-if" if="[[_orderFeature(item.id)]]">
-										<paper-button class="order-button" on-tap="_viewProductList">
-											<iron-icon icon="icons:assignment"></iron-icon>
-											Order
+							</paper-card>
+						</template>
+					</template>
+				</template>
+
+				<!--check if supplier page-->
+				<template is="dom-if" if="[[!_isOrder]]">
+					<template is="dom-repeat" items="[[organisations]]">
+						<paper-card>
+							<div class="container-fluid">
+								<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+									<div class="profile">
+										<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+									</div>
+									<div class="col m-auto right-blue-border">
+										<div class="organisation-name">[[item.name]]</div>
+										<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
+									</div>
+									<div class="col button-container">
+
+										<paper-button class="pay-button" on-tap="_payOrganisation">
+											<iron-icon icon="icons:payment"></iron-icon>
+											Pay
 										</paper-button>
-									</template>
+									</div>
 								</div>
 							</div>
-						</div>
-					</paper-card>
+						</paper-card>
+					</template>
 				</template>
 			</div>
 		</oc-form-container>
@@ -141,14 +168,14 @@
 	</template>
 
 	<script>
-        /**
-         * `oc-list-organisations`
-         * List of organisations that can be paid or orderedfrom
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/index.html
-         */
+		/**
+		 * `oc-list-organisations`
+		 * List of organisations that can be paid or orderedfrom
+		 *
+		 * @customElement
+		 * @polymer
+		 * @demo demo/index.html
+		 */
 		class OcListOrganisations extends Ordercloud.ReduxMixin(Polymer.Element) {
 			static get is() {
 				return 'oc-list-organisations';
@@ -168,6 +195,16 @@
 					_organisationId: {
 						type: Number,
 						statePath: 'organisation.id'
+					},
+					_isOrder:{
+						type: Boolean,
+						value: false,
+						notify: true
+					},
+					_orderOrganisations: {
+						type: Boolean,
+						value: false,
+						notify: true
 					},
 					organisations: {
 						type: Array,
@@ -202,6 +239,8 @@
 			ready() {
 				super.ready();
 				this._fetchSuppliers();
+				this._orderOrPay();
+
 			}
 
 			_orderFeature(orgId) {
@@ -228,9 +267,9 @@
 
 			_getAllSuppliers(organisationId) {
 				this.$.organisationApi.getAllOrganisations(organisationId, 1, -1)
-					.then(function (request) {
-						this.organisations = request.response.results;
-					}.bind(this));
+						.then(function (request) {
+							this.organisations = request.response.results;
+						}.bind(this));
 			}
 
 
@@ -259,6 +298,15 @@
 						return `https://resource.ordercloud.com/${image}`;
 					else
 						return "https://test-static.ordercloud.com/" + image;
+				}
+			}
+
+			_orderOrPay() {
+				if (this.route.path === "/order") {
+					this._isOrder = true;
+				}
+				else if(this.route.path === "/suppliers") {
+					this._isOrder = false;
 				}
 			}
 
