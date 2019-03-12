@@ -98,7 +98,7 @@
 		</style>
 		<app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
-		<oc-form-container header="Suppliers">
+		<oc-form-container header="[[_headerLabel]]">
 			<div slot="header-content" style="padding-right: 13px">
 				<iron-icon style="padding: 0" icon="icons:search" on-tap="_onSearch"></iron-icon>
 			</div>
@@ -206,6 +206,9 @@
 						value: false,
 						notify: true
 					},
+					_headerLabel: {
+						type: String
+					},
 					organisations: {
 						type: Array,
 						notify: true
@@ -304,9 +307,11 @@
 			_orderOrPay() {
 				if (this.route.path === "/order") {
 					this._isOrder = true;
+					this._headerLabel = 'Place Order';
 				}
 				else if(this.route.path === "/suppliers") {
 					this._isOrder = false;
+					this._headerLabel = 'Pay Suppliers'
 				}
 			}
 
