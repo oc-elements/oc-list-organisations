@@ -113,7 +113,7 @@
 			<div id="suppliersContainer">
 				<template is="dom-if" if="[[_isOrder]]">
 					<template is="dom-repeat" items="[[organisations]]">
-						<template is="dom-if" if="[[_orderFeature(item.id)]]">
+						<template is="dom-if" if="[[item.acceptOrders]]">
 							<paper-card>
 								<div class="container-fluid">
 									<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
@@ -140,26 +140,28 @@
 				<!--check if supplier page-->
 				<template is="dom-if" if="[[!_isOrder]]">
 					<template is="dom-repeat" items="[[organisations]]">
-						<paper-card>
-							<div class="container-fluid">
-								<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
-									<div class="profile">
-										<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
-									</div>
-									<div class="col m-auto right-blue-border">
-										<div class="organisation-name">[[item.name]]</div>
-										<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
-									</div>
-									<div class="col button-container">
+						<template is="dom-if" if="[[item.acceptPayments]]">
+							<paper-card>
+								<div class="container-fluid">
+									<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+										<div class="profile">
+											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+										</div>
+										<div class="col m-auto right-blue-border">
+											<div class="organisation-name">[[item.name]]</div>
+											<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
+										</div>
+										<div class="col button-container">
 
-										<paper-button class="pay-button" on-tap="_payOrganisation">
-											<iron-icon icon="icons:payment"></iron-icon>
-											Pay
-										</paper-button>
+											<paper-button class="pay-button" on-tap="_payOrganisation">
+												<iron-icon icon="icons:payment"></iron-icon>
+												Pay
+											</paper-button>
+										</div>
 									</div>
 								</div>
-							</div>
-						</paper-card>
+							</paper-card>
+						</template>
 					</template>
 				</template>
 			</div>
@@ -311,7 +313,7 @@
 				}
 				else if(this.route.path === "/suppliers") {
 					this._isOrder = false;
-					this._headerLabel = 'Pay Suppliers'
+					this._headerLabel = 'Pay Suppliers';
 				}
 			}
 
