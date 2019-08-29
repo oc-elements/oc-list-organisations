@@ -3,6 +3,7 @@
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../oc-organisation-api/oc-organisation-api.html">
+<link rel="import" href="../oc-connection-api/oc-connection-api.html">
 <link rel="import" href="../oc-form-container/oc-form-container.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
@@ -97,10 +98,14 @@
 			}
 		</style>
 		<app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
+		<oc-connection-api id="connectionApi"></oc-connection-api>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
 		<oc-form-container header="[[_headerLabel]]">
 			<div slot="header-content" style="padding-right: 13px">
 				<iron-icon style="padding: 0" icon="icons:search" on-tap="_onSearch"></iron-icon>
+			</div>
+			<div slot="header-content" style="padding-right: 13px">
+				<iron-icon style="padding: 0" icon="icons:add" on-tap="_requestConnection"></iron-icon>
 			</div>
 			<template is="dom-if" if=[[_isSearchActive]]>
 				<iron-input bind-value="{{_searchText}}" class="row">
@@ -135,6 +140,29 @@
 							</paper-card>
 						</template>
 					</template>
+					<!-- Pending Connections -->
+					<template is="dom-repeat" items="[[organisationConnections]]">
+							<template is="dom-if" if="[[item.toOrganisation.acceptOrders]]">
+								<paper-card>
+									<div class="container-fluid">
+										<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+											<div class="profile">
+												<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+											</div>
+											<div class="col m-auto right-blue-border">
+												<div class="organisation-name">[[item.toOrganisation.name]]</div>
+												<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
+											</div>
+											<div class="col button-container">
+												<paper-button class="disabled" disabled>
+													Pending
+												</paper-button>
+											</div>
+										</div>
+									</div>
+								</paper-card>
+							</template>
+						</template>
 				</template>
 
 				<!--check if supplier page-->
@@ -163,6 +191,28 @@
 							</paper-card>
 						</template>
 					</template>
+					<!-- Pending Connections -->
+					<template is="dom-repeat" items="[[organisationConnections]]">
+							<template is="dom-if" if="[[item.toOrganisation.acceptPayments]]">
+								<paper-card>
+									<div class="container-fluid">
+										<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+											<div class="profile">
+												<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
+											</div>
+											<div class="col m-auto right-blue-border">
+												<div class="organisation-name">[[item.toOrganisation.name]]</div>
+											</div>
+											<div class="col button-container">
+												<paper-button class="order-button disabled" disabled>
+													Pending
+												</paper-button>
+											</div>
+										</div>
+									</div>
+								</paper-card>
+							</template>
+						</template>
 				</template>
 			</div>
 		</oc-form-container>
@@ -215,6 +265,10 @@
 						type: Array,
 						notify: true
 					},
+					organisationConnections: {
+						type: Array,
+						notify: true
+					},
 					//display public connections first
 					marketplace: {
 						type: Boolean,
@@ -264,10 +318,27 @@
 			}
 
 
+			_requestConnection() {
+				this.dispatchEvent(new CustomEvent('change-page', {
+					bubbles: true, composed: true, detail: {
+						url: '/request-connection/'
+					}
+				}));
+			}
+
+
 			//fetches all connected organisations
 			_fetchSuppliers(organisationId) {
 				if (!organisationId) return;
 				this._getAllSuppliers(organisationId);
+				this._getPendingOrgananisations(organisationId)
+			}
+
+			_getPendingOrgananisations(organisationId) {
+				this.$.connectionApi.getPendingOrganisationConnections(organisationId)
+				.then(function (request) {
+							this.organisationConnections = request.response.results;
+						}.bind(this));
 			}
 
 			_getAllSuppliers(organisationId) {
