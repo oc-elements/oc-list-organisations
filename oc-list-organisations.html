@@ -27,6 +27,9 @@
 			.order-button {
 				background-color: var(--app-secondary-color);
 			}
+			.pending-button {
+				background-color:#828e9a;
+			}
 
 			iron-icon {
 				padding-right: 5px;
@@ -154,7 +157,7 @@
 												<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
 											</div>
 											<div class="col button-container">
-												<paper-button class="disabled" disabled>
+												<paper-button class="pending-button disabled" disabled>
 													Pending
 												</paper-button>
 											</div>
@@ -204,7 +207,7 @@
 												<div class="organisation-name">[[item.toOrganisation.name]]</div>
 											</div>
 											<div class="col button-container">
-												<paper-button class="order-button disabled" disabled>
+												<paper-button class="pending-button disabled" disabled>
 													Pending
 												</paper-button>
 											</div>
