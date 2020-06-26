@@ -8,6 +8,8 @@
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../src/shop-add-supplier.html">
+<link rel="import" href="../oc-toast/oc-toast.html">
 
 
 <dom-module id="oc-list-organisations">
@@ -81,14 +83,26 @@
 			}
 
 			.profile-image {
-				width: 86px;
-				height: 86px;
+				width: 144px;
+				height: 144px;
 				background: #fff;
+				border-radius: 5px;
 			}
 
 			.profile-image img {
-				width: 86px;
-				height: 86px;
+				width: 144px;
+				height: 144px;
+			}
+
+			.info-icon {
+				position: absolute;
+				right: 16px;
+				top: 7px;
+				background: #6b6b6b;
+				border-radius: 50%;
+				width: 25px;
+				height: 25px;
+				padding: 1px;
 			}
 
 			.organisation-name {
@@ -103,120 +117,73 @@
 		<app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
 		<oc-connection-api id="connectionApi"></oc-connection-api>
 		<oc-organisation-api id="organisationApi"></oc-organisation-api>
+		<oc-toast id="toast"></oc-toast>
 		<oc-form-container header="[[_headerLabel]]">
-			<div slot="header-content" style="padding-right: 13px">
-				<iron-icon style="padding: 0" icon="icons:search" on-tap="_onSearch"></iron-icon>
-			</div>
-			<div slot="header-content" style="padding-right: 13px">
-				<iron-icon style="padding: 0" icon="icons:add" on-tap="_requestConnection"></iron-icon>
-			</div>
-			<template is="dom-if" if=[[_isSearchActive]]>
-				<iron-input bind-value="{{_searchText}}" class="row">
-					<input class="search-input" placeholder="Search..." type="text">
-				</iron-input>
+			<template is="dom-if" if="[[addNewSupplier]]">
+				<div slot="header-content" style="padding-right: 13px">
+					<iron-icon style="padding: 0" icon="icons:search" on-tap="_onSearch"></iron-icon>
+				</div>
+			</template>
+			<template is="dom-if" if="[[!addNewSupplier]]">
+				<div slot="header-content" style="padding-right: 13px">
+					<iron-icon style="padding: 0" icon="icons:arrow-back" on-tap="_toggleAddSupplier"></iron-icon>
+				</div>
+			</template>
+			<template is="dom-if" if="[[addNewSupplier]]">
+					<div slot="header-content" style="padding-right: 13px">
+						<iron-icon style="padding: 0" icon="icons:add" on-tap="_toggleAddSupplier"></iron-icon>
+					</div>
+				</template>
+			<template is="dom-if" if="[[addNewSupplier]]">
+				<template is="dom-if" if=[[_isSearchActive]]>
+					<iron-input bind-value="{{_searchText}}" class="row">
+						<input class="search-input" placeholder="Search..." type="text">
+					</iron-input>
+				</template>
 			</template>
 
 			<!-- Place holder to override margin of container -->
 			<!--Check if order page-->
 			<div id="suppliersContainer">
+				<template is="dom-if" if="[[!addNewSupplier]]">
+					<shop-add-supplier></shop-add-supplier>
+				</template>
+				<template is="dom-if" if="[[addNewSupplier]]">
 				<template is="dom-if" if="[[_isOrder]]">
+					<div class="container-fluid">
+						<div class="row">
 					<template is="dom-repeat" items="[[organisations]]">
 						<template is="dom-if" if="[[item.acceptOrders]]">
-							<paper-card>
-								<div class="container-fluid">
-									<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
-										<div class="profile">
-											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
-										</div>
-										<div class="col m-auto right-blue-border">
-											<div class="organisation-name">[[item.name]]</div>
-											<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
-										</div>
-										<div class="col button-container">
-											<paper-button class="order-button" on-tap="_viewProductList">
-												<iron-icon icon="icons:assignment"></iron-icon>
-												Order
-											</paper-button>
-										</div>
-									</div>
+							<div class="col-4" style="padding: 5px 0">
+								<div class="profile" >
+										<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
+									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_viewProductList">
 								</div>
-							</paper-card>
+							</div>
 						</template>
 					</template>
-					<!-- Pending Connections -->
-					<template is="dom-repeat" items="[[organisationConnections]]">
-							<template is="dom-if" if="[[item.toOrganisation.acceptOrders]]">
-								<paper-card>
-									<div class="container-fluid">
-										<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
-											<div class="profile">
-												<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
-											</div>
-											<div class="col m-auto right-blue-border">
-												<div class="organisation-name">[[item.toOrganisation.name]]</div>
-												<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
-											</div>
-											<div class="col button-container">
-												<paper-button class="pending-button disabled" disabled>
-													Pending
-												</paper-button>
-											</div>
-										</div>
-									</div>
-								</paper-card>
-							</template>
-						</template>
+				</div>
+				</div>
 				</template>
 
 				<!--check if supplier page-->
 				<template is="dom-if" if="[[!_isOrder]]">
-					<template is="dom-repeat" items="[[organisations]]">
-						<template is="dom-if" if="[[item.acceptPayments]]">
-							<paper-card>
-								<div class="container-fluid">
-									<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
+					<div class="container-fluid">
+						<div class="row">
+							<template is="dom-repeat" items="[[organisations]]">
+								<template is="dom-if" if="[[item.acceptPayments]]">
+									<div class="col-4" style="padding: 5px 0">
 										<div class="profile">
-											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
-										</div>
-										<div class="col m-auto right-blue-border">
-											<div class="organisation-name">[[item.name]]</div>
-											<!-- <div class="organisation-location">[[item.profile.address.city]]</div> -->
-										</div>
-										<div class="col button-container">
-
-											<paper-button class="pay-button" on-tap="_payOrganisation">
-												<iron-icon icon="icons:payment"></iron-icon>
-												Pay
-											</paper-button>
+											<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
+											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
 										</div>
 									</div>
-								</div>
-							</paper-card>
-						</template>
-					</template>
-					<!-- Pending Connections -->
-					<template is="dom-repeat" items="[[organisationConnections]]">
-							<template is="dom-if" if="[[item.toOrganisation.acceptPayments]]">
-								<paper-card>
-									<div class="container-fluid">
-										<div class="row" style="background-color: var(--app-content-background-color); color: var(--app-primary-color); margin:0 -11px">
-											<div class="profile">
-												<img src="[[_calculateImage(item.toOrganisation.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image">
-											</div>
-											<div class="col m-auto right-blue-border">
-												<div class="organisation-name">[[item.toOrganisation.name]]</div>
-											</div>
-											<div class="col button-container">
-												<paper-button class="pending-button disabled" disabled>
-													Pending
-												</paper-button>
-											</div>
-										</div>
-									</div>
-								</paper-card>
+								</template>
 							</template>
-						</template>
+						</div>
+					</div>
 				</template>
+			</template>
 			</div>
 		</oc-form-container>
 
@@ -277,6 +244,11 @@
 						type: Boolean,
 						statePath: 'identity.marketplace'
 					},
+					addNewSupplier: {
+						type: Boolean,
+						notify: true,
+						value:true
+					},
 					_environment: {
 						type: String,
 						statePath: 'config.environment'
@@ -324,9 +296,33 @@
 			_requestConnection() {
 				this.dispatchEvent(new CustomEvent('change-page', {
 					bubbles: true, composed: true, detail: {
-						url: '/request-connection/'
+						url: '/add-supplier/'
 					}
 				}));
+			}
+			_toggleAddSupplier() {
+				if(this.addNewSupplier) {
+					this.addNewSupplier = false;
+					if (this.route.path === "/order") {
+					//this._isOrder = true;
+					this._headerLabel = 'Add Supplier';
+				}
+				else if(this.route.path === "/suppliers") {
+					//this._isOrder = false;
+					this._headerLabel = 'Add Suppliers';
+				}
+				}
+				else {
+					this.addNewSupplier = true;
+					if (this.route.path === "/order") {
+					//this._isOrder = true;
+					this._headerLabel = 'Place Order';
+				}
+				else if(this.route.path === "/suppliers") {
+				//	this._isOrder = false;
+					this._headerLabel = 'Pay Supplier';
+				}
+				}
 			}
 
 
@@ -334,9 +330,9 @@
 			_fetchSuppliers(organisationId) {
 				if (!organisationId) return;
 				this._getAllSuppliers(organisationId);
-				this._getPendingOrgananisations(organisationId)
+			//	this._getPendingOrgananisations(organisationId)
 			}
-
+			// No longer needed, but could come back.
 			_getPendingOrgananisations(organisationId) {
 				this.$.connectionApi.getPendingOrganisationConnections(organisationId)
 				.then(function (request) {
@@ -360,6 +356,10 @@
 						url: '/orders/unpaid-orders/' + e.model.item.id,
 					}
 				}));
+			}
+
+			_displayOrgInfo(e) {
+				this.$.toast.info(e.model.item.name + ' (' + e.model.item.code + ')');
 			}
 
 			_viewProductList(e) {
