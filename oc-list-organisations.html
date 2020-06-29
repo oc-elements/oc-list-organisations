@@ -83,20 +83,21 @@
 			}
 
 			.profile-image {
-				width: 144px;
-				height: 144px;
+				height: 100%;
+				width: 100%;
 				background: #fff;
 				border-radius: 5px;
+				min-height: 96px;
 			}
 
 			.profile-image img {
-				width: 144px;
-				height: 144px;
+				width: 100%;
+				height: 100%;
 			}
 
 			.info-icon {
 				position: absolute;
-				right: 16px;
+				right: 7px;
 				top: 7px;
 				background: #6b6b6b;
 				border-radius: 50%;
@@ -154,7 +155,7 @@
 						<div class="row">
 					<template is="dom-repeat" items="[[organisations]]">
 						<template is="dom-if" if="[[item.acceptOrders]]">
-							<div class="col-4" style="padding: 5px 0">
+							<div class="col-4 col-md-2 col-lg-2" style="padding: 5px">
 								<div class="profile" >
 										<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
 									<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_viewProductList">
@@ -172,10 +173,10 @@
 						<div class="row">
 							<template is="dom-repeat" items="[[organisations]]">
 								<template is="dom-if" if="[[item.acceptPayments]]">
-									<div class="col-4" style="padding: 5px 0">
+									<div class="col-4 col-md-3 col-l2-2" style="padding: 5px 0">
 										<div class="profile">
-											<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
-											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
+
+											<center><div style="max-width: 100px;"> <iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon><img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation"></div></center>
 										</div>
 									</div>
 								</template>
