@@ -173,10 +173,10 @@
 						<div class="row">
 							<template is="dom-repeat" items="[[organisations]]">
 								<template is="dom-if" if="[[item.acceptPayments]]">
-									<div class="col-4 col-md-3 col-l2-2" style="padding: 5px 0">
+									<div class="col-4 col-md-2 col-lg-2" style="padding: 5px">
 										<div class="profile">
-
-											<center><div style="max-width: 100px;"> <iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon><img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation"></div></center>
+											<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
+											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
 										</div>
 									</div>
 								</template>
