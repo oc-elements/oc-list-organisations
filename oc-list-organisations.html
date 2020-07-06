@@ -8,7 +8,6 @@
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../../src/shop-add-supplier.html">
 <link rel="import" href="../oc-toast/oc-toast.html">
 
 
@@ -127,12 +126,12 @@
 			</template>
 			<template is="dom-if" if="[[!addNewSupplier]]">
 				<div slot="header-content" style="padding-right: 13px">
-					<iron-icon style="padding: 0" icon="icons:arrow-back" on-tap="_toggleAddSupplier"></iron-icon>
+					<iron-icon style="padding: 0" icon="icons:arrow-back" on-tap="_gotoAddSupplier"></iron-icon>
 				</div>
 			</template>
 			<template is="dom-if" if="[[addNewSupplier]]">
 					<div slot="header-content" style="padding-right: 13px">
-						<iron-icon style="padding: 0" icon="icons:add" on-tap="_toggleAddSupplier"></iron-icon>
+						<iron-icon style="padding: 0" icon="icons:add" on-tap="_gotoAddSupplier"></iron-icon>
 					</div>
 				</template>
 			<template is="dom-if" if="[[addNewSupplier]]">
@@ -235,6 +234,12 @@
 					organisations: {
 						type: Array,
 						notify: true
+					},
+
+					visible: {
+						type: Boolean,
+						value: true,
+						observer: '_visibleChanged'
 					},
 					organisationConnections: {
 						type: Array,
@@ -355,6 +360,14 @@
 				this.dispatchEvent(new CustomEvent('change-page', {
 					bubbles: true, composed: true, detail: {
 						url: '/orders/unpaid-orders/' + e.model.item.id,
+					}
+				}));
+			}
+
+			_gotoAddSupplier(e) {
+				this.dispatchEvent(new CustomEvent('change-page', {
+					bubbles: true, composed: true, detail: {
+						url: '/add-supplier',
 					}
 				}));
 			}
