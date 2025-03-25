@@ -170,14 +170,29 @@
 				<template is="dom-if" if="[[!_isOrder]]">
 					<div class="container-fluid">
 						<div class="row">
-							<template is="dom-repeat" items="[[organisations]]">
-								<template is="dom-if" if="[[item.acceptPayments]]">
-									<div class="col-4 col-md-2 col-lg-2" style="padding: 5px">
-										<div class="profile">
-											<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
-											<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
+							<template is="dom-if" if="[[!isSearch]]">
+								<template is="dom-repeat" items="[[organisations]]">
+									<template is="dom-if" if="[[item.acceptPayments]]">
+										<div class="col-4 col-md-2 col-lg-2" style="padding: 5px">
+											<div class="profile">
+												<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
+												<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
+											</div>
 										</div>
-									</div>
+									</template>
+								</template>
+							</template>
+							<!-- Search Result -->
+							<template is="dom-if" if="[[isSearch]]">
+								<template is="dom-repeat" items="[[searchResult]]">
+									<template is="dom-if" if="[[item.acceptPayments]]">
+										<div class="col-4 col-md-2 col-lg-2" style="padding: 5px">
+											<div class="profile">
+												<iron-icon icon="icons:info-outline" class="info-icon" on-tap="_displayOrgInfo"></iron-icon>
+												<img src="[[_calculateImage(item.profile.imageThumb)]]" alt="Distributors Thumbnail" class="profile-image" on-tap="_payOrganisation">
+											</div>
+										</div>
+									</template>
 								</template>
 							</template>
 						</div>
@@ -234,6 +249,16 @@
 					organisations: {
 						type: Array,
 						notify: true
+					},
+					isSearch: {
+						type: Boolean,
+						value: false,
+						notify: true
+					},
+					searchResult: {
+						type: Array,
+						value:[],
+						notify: true,
 					},
 
 					visible: {
@@ -407,26 +432,19 @@
 
 			// This is for the searching functionality
 			_filterCheck(searchText, item) {
-				if (!item.__templatizeInstance) return true; // Skip template instance
-				const currentValue = item.__templatizeInstance.item.name;
-				if (searchText === "" || currentValue === "") {
-					return true;
-				} else {
-					const re = new RegExp(searchText, "gi");
-					return re.exec(currentValue) != null;
-				}
+				this.searchResult = this.organisations.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()) || item.code.toLowerCase().includes(searchText.toLowerCase()));
 			}
 
 			_filter(searchText) {
-				const suppliersContainer = this.$.suppliersContainer;
-				for (let supplier of suppliersContainer.children) {
-					let display;
-					if (this._filterCheck(searchText, supplier)) {
-						display = 'block';
-					} else {
-						display = 'none';
+				this.searchResult = [];
+				if(searchText.length > 3) {
+					this.isSearch = true;
+					for (let supplier of this.organisations) {
+						this._filterCheck(searchText, supplier); 
 					}
-					supplier.style.display = display;
+				}
+				else {
+					this.isSearch = false;
 				}
 			}
 		}
